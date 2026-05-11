@@ -1,6 +1,6 @@
 'use client';
 
-import {LogIn, User, UserPlus} from 'lucide-react';
+import {CircleUser, LogIn, User, UserPlus} from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,7 +18,7 @@ export default function Header() {
       <div className="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
         <div className="flex items-center gap-8">
           <a
-            className="text-2xl font-bold font-serif text-[#D2691E] italic"
+            className="text-3xl font-black tracking-tight text-[#D2691E]"
             href="#"
           >
             New English
@@ -27,8 +27,8 @@ export default function Header() {
         <div className="flex items-center gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center justify-center w-10 h-10 rounded-full border border-orange-600 text-orange-600 hover:bg-orange-50 transition active:scale-95">
-                <User />
+              <button className="flex items-center justify-center w-5 h-5 cursor-pointer rounded-full border border-orange-600 text-orange-600 hover:bg-orange-50 transition active:scale-95">
+                <CircleUser />
               </button>
             </DropdownMenuTrigger>
 
@@ -58,7 +58,8 @@ export default function Header() {
               <DropdownMenuSeparator />
 
               <p className="px-2 py-1.5 text-xs text-muted-foreground">
-                New here? Create an account begin to shopping.
+                Fresh groceries, pastries, and household essentials delivered
+                daily.
               </p>
             </DropdownMenuContent>
           </DropdownMenu>

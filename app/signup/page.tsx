@@ -1,7 +1,81 @@
+'use client';
+
 import {Cake} from 'lucide-react';
 import Link from 'next/link';
+import {useState} from 'react';
+import {users} from '@/data/user';
+import {toast} from 'sonner';
+import { useRouter } from 'next/navigation';
 
 export default function Signup() {
+  const router = useRouter();
+  
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+
+  const handleSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+
+    if (!name || !email || !password) {
+      toast.error('Please fill in all required fields.', {
+        position: 'top-right',
+      });
+
+      return;
+    }
+
+    if (password.length < 8) {
+      toast.error('Password must be at least 8 characters.', {
+        position: 'top-right',
+      });
+
+      return;
+    }
+
+    if (!acceptedTerms) {
+      toast.error('You must agree to the Terms & Conditions.', {
+        position: 'top-right',
+      });
+
+      return;
+    }
+
+    const existingUser = users.find(
+      user => user.email.toLowerCase() === email.toLowerCase(),
+    );
+
+    if (existingUser) {
+      toast.error('An account with this email already exists.', {
+        position: 'top-right',
+      });
+
+      return;
+    }
+
+    const digit = Math.floor(Math.random() * 10000);
+
+    const dashedName = name.trim().toLowerCase().replaceAll(' ', '-');
+
+    const user = {
+      id: `${dashedName}-${digit}`,
+      name,
+      email,
+      password,
+    };
+
+    users.push(user);
+
+    toast.success('Account Created, Redirecting to login', {
+      position: 'top-right',
+    });
+
+    setTimeout(() => {
+      router.push('/login');
+    }, 4000);
+  };
+
   return (
     <main className="flex min-h-screen overflow-hidden">
       {/* <!-- Brand Visual Side (Asymmetric Layout Component) --> */}
@@ -20,48 +94,61 @@ export default function Signup() {
             </span>
           </div>
           <h1 className="display-lg primary max-w-lg">
-            Discover the Art of <span className="tertiary">Freshly Baked</span>{' '}
-            Excellence.
+            Fresh Groceries, Bakery & Everyday Essentials in One Place.
           </h1>
-          <p className="body-lg on-surface-variant max-w-md mt-6">
-            Join our exclusive marketplace of local bakers and premium
-            producers. Fresh heritage grains and seasonal ingredients delivered
-            to your doorstep.
+          <p className="body-lg on-surface-variant max-w-lg mt-6">
+            Create an account to order fresh bread, groceries, pastries,
+            beverages, and household essentials from New English anytime.
           </p>
           <div className="mt-16 grid grid-cols-2 gap-6 max-w-sm">
             <div className="space-y-2">
-              <span className="label-bold primary uppercase">Organic</span>
+              <span className="label-bold primary uppercase">Fresh Daily</span>
               <p className="text-xs on-surface-variant">
-                Certified farm-to-table supply chain.
+                Bread and pastries baked fresh every morning.
               </p>
             </div>
             <div className="space-y-2">
-              <span className="label-bold primary uppercase">Artisan</span>
+              <span className="label-bold primary uppercase">
+                Fast Delivery
+              </span>
               <p className="text-xs on-surface-variant">
-                Traditional slow-fermentation methods.
+                Quick and reliable delivery to your doorstep.
               </p>
             </div>
           </div>
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-5 shadow-xl max-w-xs mt-10">
+            <h4 className="font-semibold text-[#974400] mb-3">
+              Why Shop With Us?
+            </h4>
+
+            <ul className="space-y-2 text-sm text-[#564338]">
+              <li>• Fresh bread every day</li>
+              <li>• Fast doorstep delivery</li>
+              <li>• Trusted supermarket quality</li>
+              <li>• Affordable family prices</li>
+            </ul>
+          </div>
         </div>
+
         {/* <!-- Floating Decorative Element --> */}
         <div className="absolute -bottom-12 -right-12 w-64 h-64 rounded-full bg-[#f6edde]/20 blur-3xl"></div>
       </div>
       {/* <!-- htmlForm Side --> */}
-      <div className="w-full lg:w-1/2 flex flex-col justify-center px-4 md:px-10 py-12 bg-[#fff8f1]">
-        <div className="max-w-md mx-auto w-full">
+      <div className="w-full lg:w-1/2 flex flex-col justify-center px-6 md:px-14 py-16 bg-[#fff8f1]">
+        <div className="max-w-lg mx-auto w-full">
           {/* <!-- Mobile Header --> */}
           <div className="lg:hidden flex items-center space-x-2 primary mb-8">
             <Cake className="w-8 h-8" />
-            <span className="display-lg title-sm tracking-tighter italic">
+            <span className="display-lg title-sm tracking-tight font-black">
               New English
             </span>
           </div>
           <div className="space-y-2 mb-10">
             <h2 className="headline-md headline-md on-surface">
-              Create your account
+              Create Your Shopping Account
             </h2>
             <p className="body-md on-surface-variant">
-              Already a customer?{' '}
+              Already have an account?{' '}
               <Link
                 className="primary font-semibold hover:underline"
                 href="/login"
@@ -71,7 +158,7 @@ export default function Signup() {
             </p>
           </div>
           {/* <!-- Registration htmlForm --> */}
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-2">
               <label
                 className="label-bold label-bold on-surface-variant block uppercase"
@@ -84,9 +171,11 @@ export default function Signup() {
                   className="w-full bg-white border-2 border-[#8a7266]/30 rounded-lg px-4 py-3.5 focus:ring-0 focus:border-[#fcc340] transition-colors body-md on-surface placeholder:text-[#ddc1b3]/70"
                   id="full_name"
                   name="full_name"
-                  placeholder="Evelyn Thorne"
+                  placeholder="Samuel Adeyemi"
                   required
                   type="text"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
                 />
                 <span
                   className="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined outline-variant group-focus-within:text-[#fff8f1]"
@@ -108,9 +197,11 @@ export default function Signup() {
                   className="w-full bg-white border-2 border-[#8a7266]/30 rounded-lg px-4 py-3.5 focus:ring-0 focus:border-[#fcc340] transition-colors body-md on-surface placeholder:text-[#ddc1b3]/70"
                   id="email"
                   name="email"
-                  placeholder="evelyn@premium.com"
+                  placeholder="samuel@gmail.com"
                   required
                   type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
                 />
                 <span
                   className="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined outline-variant group-focus-within:text-[#fff8f1]"
@@ -135,6 +226,8 @@ export default function Signup() {
                   placeholder="••••••••"
                   required
                   type="password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
                 />
                 <span
                   className="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined outline-variant group-focus-within:text-[#fff8f1]"
@@ -144,7 +237,7 @@ export default function Signup() {
                 </span>
               </div>
               <p className="text-xs text-[#564338]/80 px-1">
-                Must be at least 8 characters with a symbol.
+                Use at least 8 characters for better security.
               </p>
             </div>
             <div className="flex items-start space-x-3 py-2">
@@ -153,6 +246,8 @@ export default function Signup() {
                 id="terms"
                 required
                 type="checkbox"
+                checked={acceptedTerms}
+                onChange={e => setAcceptedTerms(e.target.checked)}
               />
               <label
                 className="text-sm on-surface-variant leading-snug"
@@ -166,21 +261,20 @@ export default function Signup() {
                 <a className="primary hover:underline" href="#">
                   Privacy Policy
                 </a>{' '}
-                regarding my artisanal data.
+                regarding my shopping experience and account information.
               </label>
             </div>
-            <Link href="/login">
-              <button
-                className="w-full bg-[#974400] text-[#ffffff] py-4 rounded-lg label-bold uppercase tracking-widest shadow-[0_4px_12px_rgba(151,68,0,0.15)] hover:bg-[#974400]/90 hover:shadow-[0_6px_20px_rgba(151,68,0,0.25)] transition-all active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-[#974400]/20"
-                type="submit"
-              >
-                Create My Account
-              </button>
-            </Link>
+
+            <button
+              className="w-full bg-[#974400] text-[#ffffff] py-4 rounded-lg label-bold uppercase tracking-widest shadow-[0_4px_12px_rgba(151,68,0,0.15)] hover:bg-[#974400]/90 hover:shadow-[0_6px_20px_rgba(151,68,0,0.25)] transition-all active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-[#974400]/20"
+              type="submit"
+            >
+              Create Account
+            </button>
           </form>
           <div className="mt-12 pt-8 border-t border-[#8a7266]/10 flex flex-col items-center space-y-6">
             <p className="text-sm label-bold outline-variant uppercase tracking-widest">
-              Or Register With
+              Or Continue With
             </p>
             <div className="flex space-x-4 w-full">
               <button className="flex-1 flex items-center justify-center space-x-2 py-3 border-2 border-[#8a7266]/10 rounded-lg hover:bg-[#fcf2e3] transition-colors group">
@@ -209,7 +303,7 @@ export default function Signup() {
         </div>
         {/* <!-- Footer Credits --> */}
         <footer className="mt-20 text-center text-xs outline-variant tracking-wide label-bold uppercase">
-          © 9ine5tarx. All Rights Reserved.
+          © New English Superstore. All Rights Reserved.
         </footer>
       </div>
     </main>

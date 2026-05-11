@@ -4,6 +4,7 @@ import './globals.css';
 import {cn} from '@/lib/utils';
 import {TooltipProvider} from '@/components/ui/tooltip';
 import ClientLayout from './ClientLayout';
+import { Toaster } from '@/components/ui/sonner';
 
 const geist = Geist({subsets: ['latin'], variable: '--font-sans'});
 
@@ -46,6 +47,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <ClientLayout>
           <TooltipProvider>{children}</TooltipProvider>
+          <Toaster />
         </ClientLayout>
       </body>
     </html>

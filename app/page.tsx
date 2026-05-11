@@ -9,7 +9,7 @@ export default function Home() {
       <main className="textured-bg min-h-screen">
         <Hero />
         <ProductBento />
-        <section className="max-w-7xl mx-auto px-6 py-32 grid md:grid-cols-2 gap-16 items-center">
+        <section className="max-w-7xl mx-auto px-6 py-32 grid md:grid-cols-2 gap-16 items-center bg-[#fffaf3]">
           <div className="relative">
             <div className="absolute -top-12 -left-12 w-64 h-64 bg-secondary-container/20 rounded-full blur-3xl -z-10"></div>
             <img
@@ -20,7 +20,7 @@ export default function Home() {
           </div>
           <div className="space-y-8">
             <h2 className="font-display-lg text-on-background">
-              Provenance is our Passion
+              Serving Families With Freshness & Quality
             </h2>
             <div className="space-y-6">
               <div className="flex gap-4">
@@ -33,10 +33,10 @@ export default function Home() {
                   </span>
                 </div>
                 <div>
-                  <h4 className="font-title-sm mb-1">Estate Sourced</h4>
+                  <h4 className="font-title-sm mb-1">Daily Fresh Production</h4>
                   <p className="text-on-surface-variant">
-                    We partner directly with family estates to ensure every
-                    product has a transparent and ethical origin story.
+                    Our breads, cakes, and pastries are baked fresh daily to
+                    ensure the best taste and quality.
                   </p>
                 </div>
               </div>
@@ -50,10 +50,10 @@ export default function Home() {
                   </span>
                 </div>
                 <div>
-                  <h4 className="font-title-sm mb-1">Traditional Methods</h4>
+                  <h4 className="font-title-sm mb-1">One-Stop Shopping</h4>
                   <p className="text-on-surface-variant">
-                    No additives, no compromises. We believe the best flavor
-                    comes from time-honored slow processing.
+                    From groceries to household essentials, everything your
+                    family needs is available in one place.
                   </p>
                 </div>
               </div>
@@ -67,10 +67,12 @@ export default function Home() {
                   </span>
                 </div>
                 <div>
-                  <h4 className="font-title-sm mb-1">Sustainable Path</h4>
+                  <h4 className="font-title-sm mb-1">
+                    Trusted by the Community
+                  </h4>
                   <p className="text-on-surface-variant">
-                    Plastic-free packaging and carbon-neutral delivery are at
-                    the core of our daily operations.
+                    We’ve built a reputation for quality products, friendly
+                    service, and reliable shopping experiences.
                   </p>
                 </div>
               </div>
@@ -81,11 +83,11 @@ export default function Home() {
         <section className="bg-[#D2691E] py-20">
           <div className="max-w-4xl mx-auto px-6 text-center">
             <h2 className="font-headline-md text-white mb-4">
-              Join the Epicurean Circle
+              Stay Updated With New Offers
             </h2>
             <p className="text-white/90 font-body-lg mb-8">
-              Receive early access to seasonal harvests and exclusive recipes
-              from our kitchen.
+              Get updates on fresh arrivals, bakery specials, and weekly
+              supermarket deals.
             </p>
             <form className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
               <input

@@ -1,9 +1,9 @@
-import {ArrowBigRight} from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Hero() {
   return (
-    <section className="relative h-204.75 flex items-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center overflow-hidden bg-[#fffaf3]">
       <div className="absolute inset-0 z-0">
         <Image
           alt="Close-up of artisan sourdough bread with flour dusting on a rustic wooden table with warm golden sunlight filtering through a window"
@@ -17,24 +17,33 @@ export default function Hero() {
       <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
         <div className="max-w-2xl">
           <span className="label-bold primary uppercase tracking-[0.2em] mb-4 block">
-            Est. 1924 • Artisanal Quality
+            Ibadan’s Trusted Bakery & Supermarket
           </span>
           <h1 className="display-lg on-background mb-6 leading-tight">
-            The Art of the Everyday.
+            Fresh Bread, Groceries & Everyday Essentials.
           </h1>
           <p className="body-lg on-surface-variant mb-8 leading-relaxed">
-            Discover a curated collection of Europe&apos;s finest pantry
-            staples, hand-crafted breads, and small-batch delicacies delivered
-            from our hearth to your home.
+            From oven-fresh bread and pastries to premium groceries and home
+            essentials, New English brings quality shopping closer to your
+            family every day.
           </p>
           <div className="flex flex-wrap gap-4">
-            <button className="bg-[#974400] text-white px-8 py-4 rounded-lg label-bold hover:bg-[#bb5808] transition-all shadow-lg shadow-[#974400]/20 flex items-center gap-2">
-              Explore Collection
-              <ArrowBigRight />
-            </button>
-            <button className="bg-white/80 backdrop-blur-sm border-2 border-[#974400] primary px-8 py-4 rounded-lg label-bold hover:bg-[#974400] hover:text-white transition-all">
-              Visit Our Bakery
-            </button>
+            <Link href="/store">
+              <button className="bg-[#974400] text-white px-8 py-4 rounded-lg label-bold hover:bg-[#bb5808] transition-all shadow-lg shadow-[#974400]/20 flex items-center gap-2">
+                Shop Groceries
+                <span
+                  className="material-symbols-outlined text-lg"
+                  data-icon="east"
+                >
+                  east
+                </span>
+              </button>
+            </Link>
+            <Link href="/store">
+              <button className="bg-white/80 backdrop-blur-sm border-2 border-[#974400] primary px-8 py-4 rounded-lg label-bold hover:bg-[#974400] hover:text-white transition-all">
+                Order Fresh Bread
+              </button>
+            </Link>
           </div>
         </div>
       </div>

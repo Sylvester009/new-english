@@ -1,9 +1,10 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function ProductBento() {
   return (
     <>
-      <section className="max-w-7xl mx-auto px-6 py-24">
+      <section className="max-w-7xl mx-auto px-6 py-24 bg-[#fffaf3]">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 h-full md:h-150">
           <div className="md:col-span-8 group relative overflow-hidden rounded-xl bg-surface-container-high">
             <Image
@@ -14,23 +15,24 @@ export default function ProductBento() {
             />
             <div className="absolute inset-0 bg-linear-to-t from-[#1f1b12]/80 via-transparent to-transparent flex flex-col justify-end p-8">
               <h3 className="headline-md text-white mb-2">
-                Morning Patisserie
+                Freshly Baked Daily
               </h3>
               <p className="text-white/80 body-md mb-4">
-                Hand-rolled croissants and seasonal tarts baked daily.
+                Hot bread, meat pies, doughnuts, and pastries prepared fresh
+                every morning.
               </p>
-              <a
+              <Link
                 className="secondary-fixed label-bold flex items-center gap-2"
-                href="#"
+                href="/store"
               >
-                View Bakery{' '}
+                Explore Bakery{' '}
                 <span
                   className="material-symbols-outlined text-sm"
                   data-icon="east"
                 >
                   east
                 </span>
-              </a>
+              </Link>
             </div>
           </div>
           <div className="md:col-span-4 grid grid-rows-2 gap-6">
@@ -43,7 +45,7 @@ export default function ProductBento() {
                 fill
               />
               <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-                <h3 className="title-sm text-white">Small Batch Honey</h3>
+                <h3 className="title-sm text-white">Fresh Groceries</h3>
               </div>
             </div>
             <div className="group relative overflow-hidden rounded-xl bg-surface-container-high">
@@ -55,7 +57,7 @@ export default function ProductBento() {
                 fill
               />
               <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-                <h3 className="title-sm text-white">Cold-Pressed Oils</h3>
+                <h3 className="title-sm text-white">Household Essentials</h3>
               </div>
             </div>
           </div>
@@ -67,11 +69,11 @@ export default function ProductBento() {
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
             <div>
               <h2 className="display-lg text-primary mb-2">
-                The Pantry Essentials
+                Customer Favorites
               </h2>
               <p className="text-on-surface-variant max-w-lg">
-                Every item in our collection is sourced from independent
-                producers who honor traditional methods.
+                Carefully selected products loved by families for freshness,
+                affordability, and quality.
               </p>
             </div>
             <div className="flex gap-2">
@@ -83,7 +85,7 @@ export default function ProductBento() {
               </span>
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Product Card 1 */}
             <div className="group cursor-pointer">
               <div className="relative aspect-4/5 rounded-xl overflow-hidden mb-4 bg-surface-container">
@@ -105,13 +107,11 @@ export default function ProductBento() {
               </div>
               <div className="space-y-1">
                 <div className="flex justify-between items-start">
-                  <h4 className="title-sm text-on-surface">
-                    Signature Sourdough
-                  </h4>
-                  <span className="label-bold text-primary">£6.50</span>
+                  <h4 className="title-sm text-on-surface">Family Bread</h4>
+                  <span className="label-bold text-primary">#2500</span>
                 </div>
                 <p className="text-sm text-[#8a7266] body-md italic">
-                  48-hour fermentation, stone-ground flour
+                  Soft freshly baked bread made daily
                 </p>
               </div>
             </div>
@@ -136,11 +136,11 @@ export default function ProductBento() {
               </div>
               <div className="space-y-1">
                 <div className="flex justify-between items-start">
-                  <h4 className="title-sm text-on-surface">Wildflower Honey</h4>
-                  <span className="label-bold text-primary">£12.00</span>
+                  <h4 className="title-sm text-on-surface">Chocolate Cake</h4>
+                  <span className="label-bold text-primary">₦8,000</span>
                 </div>
                 <p className="text-sm text-[#8a7266] body-md italic">
-                  Raw, unpasteurized Cotswolds nectar
+                  Rich creamy cake for birthdays and celebrations
                 </p>
               </div>
             </div>
@@ -165,11 +165,13 @@ export default function ProductBento() {
               </div>
               <div className="space-y-1">
                 <div className="flex justify-between items-start">
-                  <h4 className="title-sm text-on-surface">Maldon Sea Salt</h4>
-                  <span className="label-bold text-primary">£4.25</span>
+                  <h4 className="title-sm text-on-surface">
+                    Kitchen Essentials
+                  </h4>
+                  <span className="label-bold text-primary">₦12,000</span>
                 </div>
                 <p className="text-sm text-[#8a7266] body-md italic">
-                  Heritage pyramid flakes, 250g
+                  Rice, noodles, beverages, and household items
                 </p>
               </div>
             </div>
@@ -195,7 +197,7 @@ export default function ProductBento() {
               <div className="space-y-1">
                 <div className="flex justify-between items-start">
                   <h4 className="title-sm text-on-surface">Aged Balsamic</h4>
-                  <span className="label-bold text-primary">£24.00</span>
+                  <span className="label-bold text-primary">#24000</span>
                 </div>
                 <p className="text-sm text-[#8a7266] body-md italic">
                   12-year reserve, Modena IGP
