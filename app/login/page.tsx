@@ -42,13 +42,17 @@ export default function Login() {
       });
     }
 
-    toast.success('Login successful, Redirecting to store', {
-      position: 'top-right',
-    });
+    if (existingUser) {
+      localStorage.setItem('currentUser', JSON.stringify(existingUser));
 
-    setTimeout(() => {
-      router.push('/store');
-    }, 4000);
+      toast.success('Login successful, Redirecting to store', {
+        position: 'top-right',
+      });
+
+      setTimeout(() => {
+        router.push('/store');
+      }, 3000);
+    }
   };
 
   return (

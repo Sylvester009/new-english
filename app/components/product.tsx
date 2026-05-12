@@ -4,9 +4,10 @@ import Link from 'next/link';
 
 type ProductListProps = {
   productType: ProductType;
+  search: string;
 };
 
-export default function ProductList({productType}: ProductListProps) {
+export default function ProductList({productType, search}: ProductListProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -19,10 +20,17 @@ export default function ProductList({productType}: ProductListProps) {
     return () => clearTimeout(timer);
   }, [productType]);
 
-  const filteredProducts = useMemo(
-    () => products.filter(p => p.category === productType),
-    [productType],
-  );
+  const filteredProducts = useMemo(() => {
+    return products.filter(product => {
+      const matchesCategory = product.category === productType;
+
+      const matchesSearch = product.name
+        .toLowerCase()
+        .includes(search.toLowerCase());
+
+      return matchesCategory && matchesSearch;
+    });
+  }, [productType, search]);
 
   if (isLoading) {
     return (
@@ -50,15 +58,15 @@ export default function ProductList({productType}: ProductListProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[24px]">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
       {filteredProducts.map(product => (
         <Link
           key={product.id}
           href={`/${product.id}`}
           className="block cursor-pointer"
         >
-          <div className="bg-white rounded-xl card-shadow p-4 group">
-            <div className="relative overflow-hidden rounded-lg mb-4 aspect-4/3 bg-[#fcf2e3] border border-stone-100">
+          <div className="bg-[#fffaf5] rounded-2xl p-5 border border-[#eadccf] hover:-translate-y-1 transition-all duration-500">
+            <div className="relative overflow-hidden rounded-2xl mb-4 aspect-4/3 bg-[#fcf2e3] border border-stone-100">
               <img
                 alt={product.name}
                 src={product.image}
@@ -67,21 +75,19 @@ export default function ProductList({productType}: ProductListProps) {
 
               {product.tag && (
                 <div className="absolute top-2 left-2">
-                  <span className="bg-[#F2D7D9]/20 text-[#4A3F35] px-2 py-1 rounded-full text-[10px] label-md uppercase tracking-wider backdrop-blur-sm">
+                  <span className="bg-[#f6edde] text-[#795900] tracking-[0.18em] px-2 py-1 rounded-full text-[10px] label-md uppercase backdrop-blur-sm">
                     {product.tag}
                   </span>
                 </div>
               )}
             </div>
-            <div className="space-y-2">
-              <h3 className="headline-md text-[18px]! primary">
-                {product.name}
-              </h3>
+            <div className="space-y-3">
+              <h3 className="title-sm primary leading-snug">{product.name}</h3>
               <div className="flex justify-between items-center">
-                <span className="label-md text-lg! primary">
-                  ${product.price.toFixed(2)}
+                <span className="text-[20px] italic text-[#974400] font-medium">
+                  #{product.price.toFixed(2)}
                 </span>
-                <button className="bg-[#4A3F35] text-[#FDF8F5] p-2 rounded-lg hover:opacity-90 transition-all active:scale-95 flex items-center justify-center">
+                <button className="border border-[#974400] text-[#974400] bg-transparent hover:bg-[#974400] hover:text-white p-2 rounded-lg hover:opacity-90 transition-all active:scale-95 flex items-center justify-center">
                   <span className="material-symbols-outlined">add</span>
                 </button>
               </div>

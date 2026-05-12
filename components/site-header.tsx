@@ -14,7 +14,12 @@ import {Separator} from '@/components/ui/separator';
 import {useSidebar} from '@/components/ui/sidebar';
 import {PanelLeftIcon} from 'lucide-react';
 
-export function SiteHeader() {
+type SiteHeaderProps = {
+  search: string;
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
+};
+
+export function SiteHeader({search, setSearch}: SiteHeaderProps) {
   const {toggleSidebar} = useSidebar();
 
   return (
@@ -50,7 +55,11 @@ export function SiteHeader() {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-        <SearchForm className="w-full sm:ml-auto sm:w-auto" />
+        <SearchForm
+          className="w-full sm:ml-auto sm:w-auto"
+          search={search}
+          setSearch={setSearch}
+        />
       </div>
     </header>
   );
