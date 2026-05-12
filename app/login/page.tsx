@@ -1,6 +1,56 @@
+'use client';
+
+import {users} from '@/data/user';
 import Link from 'next/link';
+import {useRouter} from 'next/navigation';
+import {useState} from 'react';
+import {toast} from 'sonner';
 
 export default function Login() {
+  const router = useRouter();
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [keepSignIn, setKeepSignIn] = useState(false);
+
+  const handleSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+
+    if (!email || !password) {
+      toast.error('Please fill in all required fields.', {
+        position: 'top-left',
+      });
+      return;
+    }
+
+    const existingUser = users.find(
+      user =>
+        user.email.toLowerCase() === email.toLowerCase() &&
+        user.password === password,
+    );
+
+    if (!existingUser) {
+      toast.error('Invalid email or password', {
+        position: 'top-left',
+      });
+      return;
+    }
+
+    if (keepSignIn) {
+      toast.success('Login Details Saved', {
+        position: 'top-left',
+      });
+    }
+
+    toast.success('Login successful, Redirecting to store', {
+      position: 'top-right',
+    });
+
+    setTimeout(() => {
+      router.push('/store');
+    }, 4000);
+  };
+
   return (
     <>
       <main className="min-h-screen flex flex-col md:flex-row">
@@ -50,7 +100,7 @@ export default function Login() {
               New English
             </h1>
           </div>
-          <div className="w-full max-w-[480px]">
+          <div className="w-full max-w-[520px]">
             <div className="mb-10">
               <h2 className="headline-md on-surface mb-2">Welcome Back</h2>
               <p className="body-md on-surface-variant">
@@ -58,7 +108,7 @@ export default function Login() {
                 everyday essentials.
               </p>
             </div>
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               {/* <!-- Email Input --> */}
               <div className="space-y-2">
                 <label
@@ -75,6 +125,8 @@ export default function Login() {
                     placeholder="samuel@gmail.com"
                     required
                     type="email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
                   />
                   <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[#8a7266]">
                     mail
@@ -104,6 +156,8 @@ export default function Login() {
                     name="password"
                     required
                     type="password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
                   />
                   <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[#8a7266]">
                     lock
@@ -117,6 +171,8 @@ export default function Login() {
                   id="remember"
                   name="remember"
                   type="checkbox"
+                  checked={keepSignIn}
+                  onChange={e => setKeepSignIn(e.target.checked)}
                 />
                 <label
                   className="body-md on-surface-variant cursor-pointer"
@@ -127,14 +183,13 @@ export default function Login() {
               </div>
               {/* <!-- CTA Buttons --> */}
               <div className="pt-4 space-y-4">
-                <Link href="/store">
-                  <button
-                    className="w-full bg-[#974400] on-primary mb-3 label-bold py-5 rounded-lg tinted-shadow hover:bg-[#bb5808] active:scale-[0.98] transition-all uppercase tracking-widest"
-                    type="submit"
-                  >
-                    Sign In
-                  </button>
-                </Link>
+                <button
+                  className="w-full bg-[#974400] on-primary mb-3 label-bold py-5 rounded-lg tinted-shadow hover:bg-[#bb5808] active:scale-[0.98] transition-all uppercase tracking-widest"
+                  type="submit"
+                >
+                  Sign In
+                </button>
+
                 <button
                   className="w-full flex items-center justify-center gap-3 border-2 border-[#ddc1b3] on-surface label-bold py-4 rounded-lg hover:bg-[#f6edde] transition-all uppercase tracking-widest"
                   type="button"

@@ -5,6 +5,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
+
 .material-symbols-outlined {
   font-variation-settings:
     'FILL' 0,
@@ -78,7 +79,8 @@
   color: #fffbff;
 }
 .surface-container-low {
-  color: #fcf2e3;
+  color: 
+  ;
 }
 .on-tertiary-fixed {
   color: #3e001e;

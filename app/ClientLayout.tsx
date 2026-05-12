@@ -13,6 +13,7 @@ export default function ClientLayout({
   const [open, setOpen] = useState(false);
   const pathName = usePathname();
   const isStore = pathName === '/store';
+  const isCheckout = pathName === '/checkout';
 
   return (
     <>
@@ -31,7 +32,7 @@ export default function ClientLayout({
       <CartSidebar open={open} onClose={() => setOpen(false)} />
 
       {/* Floating Button */}
-      {isStore && (
+      {(isStore || isCheckout) && (
         <button
           onClick={() => setOpen(true)}
           className="
