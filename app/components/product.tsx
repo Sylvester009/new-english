@@ -62,7 +62,7 @@ export default function ProductList({productType, search}: ProductListProps) {
       {filteredProducts.map(product => (
         <Link
           key={product.id}
-          href={`/${product.id}`}
+          href={`/${product.category}/${product.id}`}
           className="block cursor-pointer"
         >
           <div className="bg-[#fffaf5] rounded-2xl p-5 border border-[#eadccf] hover:-translate-y-1 transition-all duration-500">

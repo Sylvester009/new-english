@@ -14,6 +14,7 @@ export type Product = {
     name: string;
     price: number;
     image: string;
+    description: string;
     tag?: string;
     category: ProductType;
 };
@@ -54,6 +55,7 @@ export const products: Product[] = [
         name: "Premium Rice (5kg)",
         price: 1899,
         image: "https://images.unsplash.com/photo-1586201375761-83865001e31b",
+        description: "This is the product description",
         category: "Groceries",
     },
     {
@@ -61,6 +63,7 @@ export const products: Product[] = [
         name: "Whole Wheat Pasta",
         price: 4500,
         image: "https://images.unsplash.com/photo-1589308078059-be1415eab4c3",
+        description: "This is the product description",
         category: "Groceries",
     },
     {
@@ -68,6 +71,7 @@ export const products: Product[] = [
         name: "Canned Tomatoes",
         price: 2200,
         image: "https://images.unsplash.com/photo-1604908812743-1d7e6e5f0f65",
+        description: "This is the product description",
         category: "Groceries",
     },
 
@@ -77,6 +81,7 @@ export const products: Product[] = [
         name: "Orange Juice",
         price: 3000,
         image: "https://images.unsplash.com/photo-1571689936114-b16146d9b6f6",
+        description: "This is the product description",
         category: "Drinks & Beverages",
     },
     {
@@ -84,6 +89,7 @@ export const products: Product[] = [
         name: "Iced Coffee",
         price: 4200,
         image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085",
+        description: "This is the product description",
         tag: "Cold Brew",
         category: "Drinks & Beverages",
     },
@@ -92,6 +98,7 @@ export const products: Product[] = [
         name: "Green Tea",
         price: 2800,
         image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad",
+        description: "This is the product description",
         category: "Drinks & Beverages",
     },
 
@@ -101,6 +108,7 @@ export const products: Product[] = [
         name: "Moisturizing Cream",
         price: 999,
         image: "https://images.unsplash.com/photo-1585238342028-4c9f4d9c6b8b",
+        description: "This is the product description",
         category: "Beauty & Personal Care",
     },
     {
@@ -108,6 +116,7 @@ export const products: Product[] = [
         name: "Shampoo",
         price: 6500,
         image: "https://images.unsplash.com/photo-1608248597279-f99d160bfcbc",
+        description: "This is the product description",
         category: "Beauty & Personal Care",
     },
     {
@@ -115,6 +124,7 @@ export const products: Product[] = [
         name: "Perfume",
         price: 250,
         image: "https://images.unsplash.com/photo-1615634260167-c8cdede054de",
+        description: "This is the product description",
         tag: "Luxury",
         category: "Beauty & Personal Care",
     },
@@ -125,6 +135,7 @@ export const products: Product[] = [
         name: "Cleaning Spray",
         price: 5200,
         image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952",
+        description: "This is the product description",
         category: "Household Items",
     },
     {
@@ -132,6 +143,7 @@ export const products: Product[] = [
         name: "Laundry Detergent",
         price: 100,
         image: "https://images.unsplash.com/photo-1596464716127-f2a82984de30",
+        description: "This is the product description",
         category: "Household Items",
     },
     {
@@ -139,6 +151,7 @@ export const products: Product[] = [
         name: "Toilet Paper Pack",
         price: 7500,
         image: "https://images.unsplash.com/photo-1583947215259-38e31be8751f",
+        description: "This is the product description",
         category: "Household Items",
     },
 
@@ -148,6 +161,7 @@ export const products: Product[] = [
         name: "Heritage Sourdough",
         price: 8500,
         image: "https://images.unsplash.com/photo-1608198093002-ad4e005484ec",
+        description: "This is the product description",
         tag: "Organic",
         category: "Bakery",
     },
@@ -156,6 +170,7 @@ export const products: Product[] = [
         name: "Almond Croissant",
         price: 525,
         image: "https://images.unsplash.com/photo-1608198093002-ad4e005484ec",
+        description: "This is the product description",
         tag: "Best Seller",
         category: "Bakery",
     },
@@ -164,6 +179,7 @@ export const products: Product[] = [
         name: "Chocolate Muffin",
         price: 375,
         image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c",
+        description: "This is the product description",
         category: "Bakery",
     },
 
@@ -173,6 +189,7 @@ export const products: Product[] = [
         name: "Frozen Chicken",
         price: 120,
         image: "https://images.unsplash.com/photo-1604909052872-5d0c3bb4e5c5",
+        description: "This is the product description",
         category: "Frozen Foods",
     },
     {
@@ -180,6 +197,7 @@ export const products: Product[] = [
         name: "Frozen Pizza",
         price: 9500,
         image: "https://images.unsplash.com/photo-1601924638867-3ec3c7d6b0b4",
+        description: "This is the product description",
         category: "Frozen Foods",
     },
     {
@@ -187,6 +205,7 @@ export const products: Product[] = [
         name: "Ice Cream",
         price: 6000,
         image: "https://images.unsplash.com/photo-1509042239860-f550ce710b93",
+        description: "This is the product description",
         tag: "Popular",
         category: "Frozen Foods",
     },
@@ -197,6 +216,7 @@ export const products: Product[] = [
         name: "Extension Cord",
         price: 8000,
         image: "https://images.unsplash.com/photo-1580894894513-541e068a3e2b",
+        description: "This is the product description",
         category: "Electrical Items",
     },
     {
@@ -204,6 +224,7 @@ export const products: Product[] = [
         name: "LED Bulb",
         price: 3005,
         image: "https://images.unsplash.com/photo-1581090700227-1e8d7c6e1e6c",
+        description: "This is the product description",
         category: "Electrical Items",
     },
     {
@@ -211,6 +232,7 @@ export const products: Product[] = [
         name: "Power Bank",
         price: 150,
         image: "https://images.unsplash.com/photo-1585386959984-a4155224a1ad",
+        description: "This is the product description",
         category: "Electrical Items",
     },
 
@@ -220,6 +242,7 @@ export const products: Product[] = [
         name: "Notebook Journal",
         price: 6005,
         image: "https://images.unsplash.com/photo-1519681393784-d120267933ba",
+        description: "This is the product description",
         category: "Gifts & Books",
     },
     {
@@ -227,6 +250,7 @@ export const products: Product[] = [
         name: "Gift Box Set",
         price: 2000,
         image: "https://images.unsplash.com/photo-1607083206968-13611e3d76db",
+        description: "This is the product description",
         category: "Gifts & Books",
     },
     {
@@ -234,6 +258,7 @@ export const products: Product[] = [
         name: "Motivational Book",
         price: 12000,
         image: "https://images.unsplash.com/photo-1512820790803-83ca734da794",
+        description: "This is the product description",
         category: "Gifts & Books",
     },
 
@@ -243,6 +268,7 @@ export const products: Product[] = [
         name: "Red Apples",
         price: 1002,
         image: "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce",
+        description: "This is the product description",
         category: "Fresh Produce",
     },
     {
@@ -250,6 +276,7 @@ export const products: Product[] = [
         name: "Bananas",
         price: 900,
         image: "https://images.unsplash.com/photo-1574226516831-e1dff420e37f",
+        description: "This is the product description",
         category: "Fresh Produce",
     },
     {
@@ -257,6 +284,7 @@ export const products: Product[] = [
         name: "Fresh Tomatoes",
         price: 1005,
         image: "https://images.unsplash.com/photo-1592928300905-9d65a44f5a6d",
+        description: "This is the product description",
         category: "Fresh Produce",
     },
 ];

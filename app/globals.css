@@ -79,8 +79,7 @@
   color: #fffbff;
 }
 .surface-container-low {
-  color: 
-  ;
+  color: #fcf2e3;
 }
 .on-tertiary-fixed {
   color: #3e001e;
@@ -157,7 +156,7 @@
 .inverse-primary {
   color: #ffb68d;
 }
-.outline {
+.outline-color {
   color: #8a7266;
 }
 
