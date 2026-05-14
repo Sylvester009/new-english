@@ -1,6 +1,60 @@
+'use client';
+
+import {users} from '@/data/user';
 import Link from 'next/link';
+import {useRouter} from 'next/navigation';
+import {useState} from 'react';
+import {toast} from 'sonner';
 
 export default function Login() {
+  const router = useRouter();
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [keepSignIn, setKeepSignIn] = useState(false);
+
+  const handleSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+
+    if (!email || !password) {
+      toast.error('Please fill in all required fields.', {
+        position: 'top-left',
+      });
+      return;
+    }
+
+    const existingUser = users.find(
+      user =>
+        user.email.toLowerCase() === email.toLowerCase() &&
+        user.password === password,
+    );
+
+    if (!existingUser) {
+      toast.error('Invalid email or password', {
+        position: 'top-left',
+      });
+      return;
+    }
+
+    if (keepSignIn) {
+      toast.success('Login Details Saved', {
+        position: 'top-left',
+      });
+    }
+
+    if (existingUser) {
+      localStorage.setItem('currentUser', JSON.stringify(existingUser));
+
+      toast.success('Login successful, Redirecting to dashboard', {
+        position: 'top-right',
+      });
+
+      setTimeout(() => {
+        router.push('/admin/dashboard');
+      }, 3000);
+    }
+  };
+
   return (
     <>
       <main className="min-h-screen flex flex-col md:flex-row">
@@ -12,19 +66,32 @@ export default function Login() {
               className="w-full h-full object-cover"
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuCE63WqLTEQhRNumnYVV3MVuue8OD9E1LN8DK7JPuQ6nazCtYnFSBFhYyVXaUFE61J6sGaSZEHyzYVxmAFjgFoCz2iypCkbse9cfhJSSjQZF9-3THd6SB8OGGMfyXdBwJGJXIhVbAnHSi65oRi9kB25SsU-eaYjFQKLlTVoqYCT8Y_mI-ICkVpH3RjYthQY4TwrIr3VZzfme8ria_JddA8ddHW5XmTXq3arjoZ7eFAY02VwkKzD5oybpGt7NHN6QjSPE4RNc8NKBTs"
             />
-            <div className="absolute inset-0 bg-[#974400]/20 mix-blend-multiply"></div>
-            <div className="absolute inset-0 bg-linear-to-t from-[#974400]/60 via-transparent to-transparent"></div>
+            <div className="absolute inset-0 bg-[#974400]/10 mix-blend-multiply"></div>
+            <div className="absolute inset-0 bg-linear-to-t from-[#974400]/40 via-transparent to-transparent"></div>
           </div>
           <div className="relative z-10 p-10 surface-container-lowest max-w-xl">
             <h1 className="display-lg mb-4 italic">New English</h1>
             <p className="body-lg opacity-90 leading-relaxed">
-              A celebration of tradition, craftsmanship, and the finest organic
-              ingredients sourced from local estates.
+              Fresh bread, groceries, pastries, and household essentials trusted
+              by families every day.
             </p>
             <div className="mt-12 flex items-center gap-4">
               <div className="h-px w-12 bg-[#ffffff]/50"></div>
               <span className="label-bold tracking-widest uppercase">
-                Since 1924
+                Fresh Daily • Trusted Quality
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-3 mt-8">
+              <span className="bg-orange-300 px-4 py-2 rounded-full text-white text-sm">
+                Fresh Bread Daily
+              </span>
+
+              <span className="bg-orange-300 text-white px-4 py-2 rounded-full text-sm">
+                Fast Delivery
+              </span>
+
+              <span className="bg-orange-300 text-white px-4 py-2 rounded-full text-sm">
+                Trusted Supermarket
               </span>
             </div>
           </div>
@@ -33,17 +100,19 @@ export default function Login() {
         <section className="flex-1 flex flex-col justify-center items-center p-6 md:p-10 bg-[#fff8f1]">
           {/* <!-- Mobile Header (Only visible on small screens) --> */}
           <div className="md:hidden mb-12 text-center">
-            <h1 className="display-lg primary italic">New English</h1>
+            <h1 className="display-lg primary font-black tracking-tight">
+              New English
+            </h1>
           </div>
-          <div className="w-full max-w-[440px]">
+          <div className="w-full max-w-[520px]">
             <div className="mb-10">
-              <h2 className="headline-md on-surface mb-2">Welcome back Admin</h2>
+              <h2 className="headline-md on-surface mb-2">Welcome Back Admin</h2>
               <p className="body-md on-surface-variant">
-                Please enter your details to access your artisanal marketplace
-                account.
+                Sign in to continue shopping fresh groceries, bakery items, and
+                everyday essentials.
               </p>
             </div>
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               {/* <!-- Email Input --> */}
               <div className="space-y-2">
                 <label
@@ -57,9 +126,11 @@ export default function Login() {
                     className="w-full px-4 py-4 bg-[#ffffff] border-2 border-[#ddc1b3] rounded-lg focus:ring-0 focus:border-[#fcc340] transition-colors body-md on-surface placeholder:text-[#8a7266]"
                     id="email"
                     name="email"
-                    placeholder="name@example.com"
+                    placeholder="samuel@gmail.com"
                     required
                     type="email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
                   />
                   <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[#8a7266]">
                     mail
@@ -79,7 +150,7 @@ export default function Login() {
                     className="label-bold secondary hover:text-[#974400] transition-colors"
                     href="#"
                   >
-                    Forgot Password?
+                    Forgot password?
                   </a>
                 </div>
                 <div className="relative">
@@ -89,6 +160,8 @@ export default function Login() {
                     name="password"
                     required
                     type="password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
                   />
                   <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[#8a7266]">
                     lock
@@ -102,24 +175,25 @@ export default function Login() {
                   id="remember"
                   name="remember"
                   type="checkbox"
+                  checked={keepSignIn}
+                  onChange={e => setKeepSignIn(e.target.checked)}
                 />
                 <label
                   className="body-md on-surface-variant cursor-pointer"
                   htmlFor="remember"
                 >
-                  Remember me for 30 days
+                  Keep me signed in
                 </label>
               </div>
               {/* <!-- CTA Buttons --> */}
               <div className="pt-4 space-y-4">
-                <Link href="/admin/dashboard">
-                  <button
-                    className="w-full bg-[#974400] on-primary label-bold py-5 rounded-lg tinted-shadow hover:bg-[#bb5808] active:scale-[0.98] transition-all uppercase tracking-widest"
-                    type="submit"
-                  >
-                    Sign In
-                  </button>
-                </Link>
+                <button
+                  className="w-full bg-[#974400] on-primary mb-3 label-bold py-5 rounded-lg tinted-shadow hover:bg-[#bb5808] active:scale-[0.98] transition-all uppercase tracking-widest"
+                  type="submit"
+                >
+                  Sign In
+                </button>
+
                 <button
                   className="w-full flex items-center justify-center gap-3 border-2 border-[#ddc1b3] on-surface label-bold py-4 rounded-lg hover:bg-[#f6edde] transition-all uppercase tracking-widest"
                   type="button"
@@ -142,24 +216,13 @@ export default function Login() {
                       fill="currentColor"
                     ></path>
                   </svg>
-                  Continue with Google
+                  Sign in with Google
                 </button>
               </div>
             </form>
             
           </div>
-          {/* <!-- Footer Links --> */}
-          <footer className="mt-auto pt-12 flex gap-8 text-xs label-bold text-[#8a7266] uppercase tracking-widest">
-            <a className="hover:text-[#1f1b12] transition-colors" href="#">
-              Privacy Policy
-            </a>
-            <a className="hover:text-[#1f1b12] transition-colors" href="#">
-              Terms of Service
-            </a>
-            <a className="hover:text-[#1f1b12] transition-colors" href="#">
-              Contact
-            </a>
-          </footer>
+          
         </section>
       </main>
       {/* <!-- Decoration Element (Subtle Grain/Texture Overlay) --> */}
