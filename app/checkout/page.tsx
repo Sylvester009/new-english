@@ -32,7 +32,7 @@ export default function Checkout() {
                 check
               </span>
             </div>
-            <span className="text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-[#564338]">
+            <span className="text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] text-[#564338]">
               Info
             </span>
           </div>
@@ -48,7 +48,7 @@ export default function Checkout() {
                 local_shipping
               </span>
             </div>
-            <span className="text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-[#974400]">
+            <span className="text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] text-[#974400]">
               Delivery
             </span>
           </div>
@@ -63,7 +63,7 @@ export default function Checkout() {
                 rate_review
               </span>
             </div>
-            <span className="text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-[#564338]/60">
+            <span className="text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] text-[#564338]/60">
               Review
             </span>
           </div>
@@ -78,7 +78,7 @@ export default function Checkout() {
                 payments
               </span>
             </div>
-            <span className="text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-[#564338]/60">
+            <span className="text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] text-[#564338]/60">
               Payment
             </span>
           </div>
@@ -121,7 +121,7 @@ export default function Checkout() {
                 />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-[#1f1b12] truncate">
+                <div className="text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] text-[#1f1b12] truncate">
                   Country Sourdough Loaf
                 </div>
                 <div className="text-[#564338] text-xs mt-1.5">Quantity: 1</div>
@@ -140,7 +140,7 @@ export default function Checkout() {
                 />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-[#1f1b12] truncate">
+                <div className="text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] text-[#1f1b12] truncate">
                   Estate Strawberry Jam
                 </div>
                 <div className="text-[#564338] text-xs mt-1.5">Quantity: 2</div>
@@ -159,7 +159,7 @@ export default function Checkout() {
                 />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-[#1f1b12] truncate">
+                <div className="text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] text-[#1f1b12] truncate">
                   Sicilian Extra Virgin Oil
                 </div>
                 <div className="text-[#564338] text-xs mt-1.5">Quantity: 1</div>
@@ -201,7 +201,7 @@ export default function Checkout() {
               verified_user
             </span>
             <div className="flex-1">
-              <div className="text-[11px] leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-[#564338] uppercase">
+              <div className="text-[11px] leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] text-[#564338] uppercase">
                 Secure Checkout Guaranteed
               </div>
               <div className="text-[10px] text-[#564338]/70 mt-0.5">

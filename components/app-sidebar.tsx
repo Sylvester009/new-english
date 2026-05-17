@@ -34,7 +34,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
+import {redirect} from 'next/navigation';
 
 const categories = [
   {
@@ -96,10 +97,9 @@ export function AppSidebar({active, setActive, ...props}: AppSidebarProps) {
     }
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('currentUser');
+  const handleLogout = async () => {
 
-    window.location.href = '/login';
+    redirect('/login');
   };
 
   return (

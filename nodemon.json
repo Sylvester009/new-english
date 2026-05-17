@@ -1,0 +1,8 @@
+{
+  "ignore": [
+    "data/users.json",
+    "data/*",
+    ".next/*",
+    "node_modules/*"
+  ]
+}
