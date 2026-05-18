@@ -1,59 +1,26 @@
 'use client';
 
-import {users} from '@/data/user';
 import Link from 'next/link';
-import {useRouter} from 'next/navigation';
-import {useState} from 'react';
+import {useActionState, useEffect, useState} from 'react';
 import {toast} from 'sonner';
+import {login} from '../actions/auth';
 
 export default function Login() {
-  const router = useRouter();
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [keepSignIn, setKeepSignIn] = useState(false);
 
-  const handleSubmit = (e: React.SyntheticEvent) => {
-    e.preventDefault();
+  const [state, formAction, pending] = useActionState(login, undefined);
 
-    if (!email || !password) {
-      toast.error('Please fill in all required fields.', {
-        position: 'top-left',
-      });
-      return;
+  useEffect(() => {
+    if (state?.message) {
+      toast.error(state.message, {position: 'top-right'});
     }
-
-    const existingUser = users.find(
-      user =>
-        user.email.toLowerCase() === email.toLowerCase() &&
-        user.password === password,
-    );
-
-    if (!existingUser) {
-      toast.error('Invalid email or password', {
-        position: 'top-left',
-      });
-      return;
-    }
-
-    if (keepSignIn) {
-      toast.success('Login Details Saved', {
-        position: 'top-left',
-      });
-    }
-
-    if (existingUser) {
-      localStorage.setItem('currentUser', JSON.stringify(existingUser));
-
-      toast.success('Login successful, Redirecting to store', {
+    if (!state?.message) {
+      toast.success('Login successfully, redirecting to the store', {
         position: 'top-right',
       });
-
-      setTimeout(() => {
-        router.push('/store');
-      }, 3000);
     }
-  };
+  }, [state]);
 
   return (
     <>
@@ -112,7 +79,7 @@ export default function Login() {
                 everyday essentials.
               </p>
             </div>
-            <form className="space-y-6" onSubmit={handleSubmit}>
+            <form className="space-y-6" action={formAction}>
               {/* <!-- Email Input --> */}
               <div className="space-y-2">
                 <label
@@ -136,6 +103,7 @@ export default function Login() {
                     mail
                   </span>
                 </div>
+                {state?.errors?.email && <p>{state.errors.email}</p>}
               </div>
               {/* <!-- Password Input --> */}
               <div className="space-y-2">
@@ -167,29 +135,16 @@ export default function Login() {
                     lock
                   </span>
                 </div>
+                {state?.errors?.password && <p>{state.errors.password}</p>}
               </div>
               {/* <!-- Remember Me --> */}
-              <div className="flex items-center gap-3">
-                <input
-                  className="w-5 h-5 rounded border-[#ddc1b3] primary focus:ring-[#bb5808] bg-[#ffffff]"
-                  id="remember"
-                  name="remember"
-                  type="checkbox"
-                  checked={keepSignIn}
-                  onChange={e => setKeepSignIn(e.target.checked)}
-                />
-                <label
-                  className="body-md on-surface-variant cursor-pointer"
-                  htmlFor="remember"
-                >
-                  Keep me signed in
-                </label>
-              </div>
+
               {/* <!-- CTA Buttons --> */}
               <div className="pt-4 space-y-4">
                 <button
                   className="w-full bg-[#974400] on-primary mb-3 label-bold py-5 rounded-lg tinted-shadow hover:bg-[#bb5808] active:scale-[0.98] transition-all uppercase tracking-widest"
                   type="submit"
+                  disabled={pending}
                 >
                   Sign In
                 </button>
