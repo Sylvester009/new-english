@@ -1,76 +1,68 @@
-import Footer from '../../components/footer';
-import Header from '../../components/header';
-import {Product, products} from '../../data';
+'use client';
 
-export default async function ProductDetails({
-  params,
-}: {
-  params: Promise<{id: string; category: string}>;
-}) {
-  const {id, category} = await params;
+import { useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import Footer from './footer';
+import Header from './header';
+import { Product } from '@/types/product';
 
-  const product: Product | undefined = products.find(prod => prod.id === id);
+interface ProductDetailsProps {
+  product: Product;
+  relatedProducts: Product[];
+}
 
-  const relatedProducts = products
-    .filter(
-      prod => prod.category === product?.category && prod.id !== product?.id,
-    )
-    .slice(0, 4);
+export default function ProductDetails({ product, relatedProducts }: ProductDetailsProps) {
+  const [quantity, setQuantity] = useState(1);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
-  if (!product) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#fff8f1]">
-        <div className="text-center p-8">
-          <span className="material-symbols-outlined text-6xl text-[#974400] mb-4">
-            search_off
-          </span>
-          <h1 className="font-['Noto_Serif'] text-[48px] leading-[1.2] tracking-[-0.02em] font-bold text-[#974400] mb-4">
-            Product Not Found
-          </h1>
-          <p className="font-['Plus_Jakarta_Sans'] text-lg leading-[1.6] text-[#564338]">
-            This item may have been removed from the collection.
-          </p>
-          <a
-            href="/store"
-            className="inline-block mt-6 px-6 py-3 bg-[#974400] text-white rounded-xl font-bold font-['Plus_Jakarta_Sans'] hover:brightness-110 transition-all"
-          >
-            Back to Store
-          </a>
-        </div>
-      </div>
-    );
-  }
+  const handleQuantityChange = (change: number) => {
+    setQuantity(prev => Math.max(1, prev + change));
+  };
+
+  const handleAddToCart = async () => {
+    setIsAddingToCart(true);
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 500));
+    console.log(`Added ${quantity} of ${product.name} to cart`);
+    setIsAddingToCart(false);
+  };
 
   return (
     <>
       <Header />
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 lg:pt-14 pb-20">
-        {/* Breadcrumb */}
-        <nav className="mb-6 flex items-center gap-2 text-sm font-medium font-['Plus_Jakarta_Sans'] text-[#8a7266]">
-          <a className="hover:text-[#974400] transition-colors" href="/store">
+        {/* Breadcrumb with Schema.org markup */}
+        <nav className="mb-6 flex items-center gap-2 text-sm font-medium font-['Plus_Jakarta_Sans'] text-[#8a7266]" aria-label="Breadcrumb">
+          <Link className="hover:text-[#974400] transition-colors" href="/store">
             Home
-          </a>
-          <span className="material-symbols-outlined text-sm">
-            chevron_right
-          </span>
-          <a className="hover:text-[#974400] transition-colors" href="/store">
+          </Link>
+          <span className="material-symbols-outlined text-sm">chevron_right</span>
+          <Link 
+            className="hover:text-[#974400] transition-colors" 
+            href={`/store?category=${encodeURIComponent(product.category)}`}
+          >
             {product.category}
-          </a>
-          <span className="material-symbols-outlined text-sm">
-            chevron_right
+          </Link>
+          <span className="material-symbols-outlined text-sm">chevron_right</span>
+          <span className="text-[#974400] font-bold" aria-current="page">
+            {product.name}
           </span>
-          <span className="text-[#974400] font-bold">{product.name}</span>
         </nav>
 
         {/* Product Hero Section */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 mb-16">
-          {/* Gallery */}
+          {/* Gallery - Optimized Images */}
           <div className="lg:col-span-7">
-            <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-sm border border-[#ebe1d3]/50">
-              <img
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
-                alt={product.name}
+            <div className="relative aspect-4/5 rounded-2xl overflow-hidden shadow-sm border border-[#ebe1d3]/50 bg-[#fcf2e3]">
+              <Image
                 src={product.image}
+                alt={product.name}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-cover hover:scale-105 transition-transform duration-700"
+                priority // Priority for main product image
+                quality={85}
               />
             </div>
           </div>
@@ -78,7 +70,7 @@ export default async function ProductDetails({
           {/* Product Details */}
           <div className="lg:col-span-5 flex flex-col gap-6">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="bg-[#fcc340]/30 text-[#974400] text-sm font-bold font-['Plus_Jakarta_Sans'] px-3 py-1 rounded-full uppercase text-[10px] tracking-[0.1em]">
+              <span className="bg-[#fcc340]/30 text-[#974400] text-sm font-bold font-['Plus_Jakarta_Sans'] px-3 py-1 rounded-full uppercase text-[10px] tracking-widest">
                 {product.tag || product.category}
               </span>
               <div className="flex items-center gap-1 text-[#564338]">
@@ -99,8 +91,11 @@ export default async function ProductDetails({
               <span className="font-['Noto_Serif'] text-[32px] leading-[1.3] font-semibold text-[#974400]">
                 £{product.price.toFixed(2)}
               </span>
-              <span className="text-[#564338] line-through font-['Plus_Jakarta_Sans'] text-base leading-[1.5]">
+              <span className="text-[#564338] line-through font-['Plus_Jakarta_Sans'] text-base leading-normal">
                 £{(product.price * 1.2).toFixed(2)}
+              </span>
+              <span className="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">
+                Save 20%
               </span>
             </div>
 
@@ -114,25 +109,38 @@ export default async function ProductDetails({
             <div className="flex flex-col gap-4 mt-2">
               <div className="flex items-center gap-4">
                 <div className="flex items-center border-2 border-[#ddc1b3] rounded-xl p-1 bg-[#ffffff] shadow-sm">
-                  <button className="w-10 h-10 flex items-center justify-center hover:bg-[#fcf2e3] rounded-lg transition-colors">
+                  <button 
+                    onClick={() => handleQuantityChange(-1)}
+                    className="w-10 h-10 flex items-center justify-center hover:bg-[#fcf2e3] rounded-lg transition-colors disabled:opacity-50"
+                    disabled={quantity <= 1}
+                    aria-label="Decrease quantity"
+                  >
                     <span className="material-symbols-outlined text-[#1f1b12]">
                       remove
                     </span>
                   </button>
                   <span className="w-12 text-center font-bold text-[#1f1b12] font-['Plus_Jakarta_Sans']">
-                    1
+                    {quantity}
                   </span>
-                  <button className="w-10 h-10 flex items-center justify-center hover:bg-[#fcf2e3] rounded-lg transition-colors">
+                  <button 
+                    onClick={() => handleQuantityChange(1)}
+                    className="w-10 h-10 flex items-center justify-center hover:bg-[#fcf2e3] rounded-lg transition-colors"
+                    aria-label="Increase quantity"
+                  >
                     <span className="material-symbols-outlined text-[#1f1b12]">
                       add
                     </span>
                   </button>
                 </div>
-                <button className="flex-1 bg-[#4A3F35] text-[#FDF8F5] py-3.5 rounded-xl font-bold font-['Plus_Jakarta_Sans'] tracking-wide shadow-md hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                <button 
+                  onClick={handleAddToCart}
+                  disabled={isAddingToCart}
+                  className="flex-1 bg-[#4A3F35] text-[#FDF8F5] py-3.5 rounded-xl font-bold font-['Plus_Jakarta_Sans'] tracking-wide shadow-md hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
                   <span className="material-symbols-outlined text-sm">
-                    shopping_bag
+                    {isAddingToCart ? 'hourglass_empty' : 'shopping_bag'}
                   </span>
-                  Add to Bag
+                  {isAddingToCart ? 'Adding...' : 'Add to Bag'}
                 </button>
               </div>
               <div className="flex items-center gap-2 text-sm text-[#ba1a1a] mt-1 font-['Plus_Jakarta_Sans'] font-medium">
@@ -150,7 +158,7 @@ export default async function ProductDetails({
                 <span className="material-symbols-outlined text-[#bb5808] text-2xl">
                   oven_gen
                 </span>
-                <span className="text-[10px] font-bold uppercase tracking-[0.05em] text-[#1f1b12] font-['Plus_Jakarta_Sans']">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#1f1b12] font-['Plus_Jakarta_Sans']">
                   Stone Baked
                 </span>
               </div>
@@ -158,7 +166,7 @@ export default async function ProductDetails({
                 <span className="material-symbols-outlined text-[#bb5808] text-2xl">
                   timer
                 </span>
-                <span className="text-[10px] font-bold uppercase tracking-[0.05em] text-[#1f1b12] font-['Plus_Jakarta_Sans']">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#1f1b12] font-['Plus_Jakarta_Sans']">
                   36h Ferment
                 </span>
               </div>
@@ -166,7 +174,7 @@ export default async function ProductDetails({
                 <span className="material-symbols-outlined text-[#bb5808] text-2xl">
                   eco
                 </span>
-                <span className="text-[10px] font-bold uppercase tracking-[0.05em] text-[#1f1b12] font-['Plus_Jakarta_Sans']">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#1f1b12] font-['Plus_Jakarta_Sans']">
                   100% Organic
                 </span>
               </div>
@@ -175,20 +183,21 @@ export default async function ProductDetails({
         </div>
 
         {/* Related Products */}
-        <section className="mt-16">
-          <div className="flex items-baseline justify-between mb-10">
-            <h2 className="font-['Noto_Serif'] text-[32px] leading-[1.3] font-semibold text-[#974400]">
-              Other {category} Products
-            </h2>
-            <a
-              className="text-sm font-bold font-['Plus_Jakarta_Sans'] text-[#974400] underline underline-offset-4 hover:opacity-80 transition-opacity"
-              href="#"
-            >
-              Explore More
-            </a>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {relatedProducts.map(item => (
+        {relatedProducts.length > 0 && (
+          <section className="mt-16">
+            <div className="flex items-baseline justify-between mb-10">
+              <h2 className="font-['Noto_Serif'] text-[32px] leading-[1.3] font-semibold text-[#974400]">
+                Other {product.category} Products
+              </h2>
+              <Link
+                className="text-sm font-bold font-['Plus_Jakarta_Sans'] text-[#974400] underline underline-offset-4 hover:opacity-80 transition-opacity"
+                href={`/store?category=${encodeURIComponent(product.category)}`}
+              >
+                Explore More
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {relatedProducts.map(item => (
               <div
                 key={item.id}
                 className="bg-[#ffffff] rounded-xl border border-[#ddc1b3]/50 p-4 shadow-sm hover:shadow-md transition-all group"
@@ -212,10 +221,11 @@ export default async function ProductDetails({
                 </button>
               </div>
             ))}
-          </div>
-        </section>
+            </div>
+          </section>
+        )}
 
-        {/* Customer Reviews */}
+        {/* Customer Reviews Section */}
         <section className="mt-16 bg-[#fcf2e3] rounded-3xl p-6 lg:p-8 border border-[#ddc1b3]/50">
           <div className="flex flex-col md:flex-row gap-8 lg:gap-16">
             <div className="md:w-1/3">
@@ -269,14 +279,14 @@ export default async function ProductDetails({
                     2 days ago
                   </span>
                 </div>
-                <p className="font-['Plus_Jakarta_Sans'] text-base leading-[1.5] text-[#564338] italic">
+                <p className="font-['Plus_Jakarta_Sans'] text-base leading-normal text-[#564338] italic">
                   &ldquo;The crust on this sourdough is unlike anything
                   I&apos;ve found outside of London. Perfectly charred and the
                   interior stays moist for days. My new weekly essential.&rdquo;
                 </p>
               </div>
               {/* Review 2 */}
-              <div className="border-b border-[#ddc1b3]/50 pb-6">
+              <div className="pb-6">
                 <div className="flex justify-between items-start mb-2">
                   <div>
                     <h4 className="font-bold text-[#974400] font-['Plus_Jakarta_Sans']">
@@ -300,7 +310,7 @@ export default async function ProductDetails({
                     1 week ago
                   </span>
                 </div>
-                <p className="font-['Plus_Jakarta_Sans'] text-base leading-[1.5] text-[#564338] italic">
+                <p className="font-['Plus_Jakarta_Sans'] text-base leading-normal text-[#564338] italic">
                   &ldquo;Outstanding tang and beautiful crumb. It pairs
                   perfectly with just about anything. I only wish it didn&apos;t
                   sell out so quickly in the mornings!&rdquo;
@@ -316,25 +326,25 @@ export default async function ProductDetails({
       {/* Bottom Navigation Bar (Mobile only) */}
       <nav className="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-safe pt-2 bg-[#FDF8F5]/95 backdrop-blur-md border-t border-stone-200 z-50 shadow-[0_-4px_20px_rgba(74,63,53,0.04)] rounded-t-2xl">
         {[
-          {icon: 'storefront', label: 'Shop', active: true},
-          {icon: 'search', label: 'Search', active: false},
-          {icon: 'shopping_bag', label: 'Cart', active: false},
-          {icon: 'person', label: 'Account', active: false},
+          { icon: 'storefront', label: 'Shop', href: '/store', active: false },
+          { icon: 'search', label: 'Search', href: '/search', active: false },
+          { icon: 'shopping_bag', label: 'Cart', href: '/cart', active: false },
+          { icon: 'person', label: 'Account', href: '/account', active: false },
         ].map(item => (
-          <a
+          <Link
             key={item.label}
             className={`flex flex-col items-center justify-center rounded-xl px-4 py-1 transition-all ${
               item.active ? 'text-[#4A3F35] bg-[#F2D7D9]/30' : 'text-stone-400'
             }`}
-            href="#"
+            href={item.href}
           >
             <span className="material-symbols-outlined" data-icon={item.icon}>
               {item.icon}
             </span>
-            <span className="font-['Plus_Jakarta_Sans'] text-[10px] font-medium uppercase tracking-[0.05em]">
+            <span className="font-['Plus_Jakarta_Sans'] text-[10px] font-medium uppercase tracking-wider">
               {item.label}
             </span>
-          </a>
+          </Link>
         ))}
       </nav>
     </>

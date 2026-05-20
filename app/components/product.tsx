@@ -1,6 +1,9 @@
 import {useEffect, useMemo, useState} from 'react';
-import {Product, products, ProductType} from '../data';
+import {ProductType} from '../data';
 import Link from 'next/link';
+import Image from 'next/image';
+import {useProducts} from '@/hooks/useProducts';
+import localProducts from '@/data/products.json';
 
 type ProductListProps = {
   productType: ProductType;
@@ -8,29 +11,11 @@ type ProductListProps = {
 };
 
 export default function ProductList({productType, search}: ProductListProps) {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    setIsLoading(true);
-
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000); // 1s fake delay
-
-    return () => clearTimeout(timer);
-  }, [productType]);
-
-  const filteredProducts = useMemo(() => {
-    return products.filter(product => {
-      const matchesCategory = product.category === productType;
-
-      const matchesSearch = product.name
-        .toLowerCase()
-        .includes(search.toLowerCase());
-
-      return matchesCategory && matchesSearch;
-    });
-  }, [productType, search]);
+  const {products, isLoading, error} = useProducts({
+    category: productType,
+    search,
+    initialData: localProducts.filter(p => p.category === productType),
+  });
 
   if (isLoading) {
     return (
@@ -46,12 +31,29 @@ export default function ProductList({productType, search}: ProductListProps) {
     );
   }
 
-  if (filteredProducts.length === 0) {
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center">
+        <p className="text-lg font-semibold text-red-600">
+          Error loading products
+        </p>
+        <p className="text-sm text-gray-400 mt-2">{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-4 px-4 py-2 bg-[#974400] text-white rounded-lg hover:opacity-90"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  if (products.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <p className="text-lg font-semibold text-gray-600">No products found</p>
         <p className="text-sm text-gray-400 mt-2">
-          Try selecting another category
+          Try adjusting your search or selecting another category
         </p>
       </div>
     );
@@ -59,18 +61,22 @@ export default function ProductList({productType, search}: ProductListProps) {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
-      {filteredProducts.map(product => (
+      {products.map(product => (
         <Link
           key={product.id}
-          href={`/${product.category}/${product.id}`}
+          href={`/${product.id}`}
           className="block cursor-pointer"
         >
           <div className="bg-[#fffaf5] rounded-2xl p-5 border border-[#eadccf] hover:-translate-y-1 transition-all duration-500">
             <div className="relative overflow-hidden rounded-2xl mb-4 aspect-4/3 bg-[#fcf2e3] border border-stone-100">
-              <img
+              <Image
                 alt={product.name}
                 src={product.image}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                priority={false}
+                loading="lazy"
               />
 
               {product.tag && (
