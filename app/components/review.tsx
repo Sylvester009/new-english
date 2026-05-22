@@ -1,13 +1,20 @@
 import {useCartStore} from '@/store/cart-store';
+import {useCheckoutStore} from '@/store/checkout-store';
 
-export default function Review({
-  steps,
-  setSteps,
-}: {
-  steps: number;
-  setSteps: any;
-}) {
+export default function Review() {
+  const nextStep = useCheckoutStore(state => state.nextStep);
+  const prevStep = useCheckoutStore(state => state.prevStep);
+
   const items = useCartStore(state => state.items);
+
+  const deliveryMethod = useCheckoutStore(state => state.deliveryMethod);
+
+  const deliveryInfo = useCheckoutStore(state => state.deliveryInfo);
+
+  const isValid =
+    deliveryMethod === 'pickup'
+      ? true
+      : deliveryInfo.address && deliveryInfo.city && deliveryInfo.postcode;
 
   return (
     <div className="flex-1">
@@ -29,34 +36,51 @@ export default function Review({
           </h2>
           <button
             className="text-[#974400] text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] hover:underline transition-all"
-            onClick={() => setSteps(2)}
+            onClick={prevStep}
           >
             Edit
           </button>
         </div>
         <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+          {deliveryMethod === 'delivery' ? (
+            <div>
+              <p className="text-[#564338] text-xs uppercase tracking-[0.1em] font-bold mb-2">
+                Shipping Address
+              </p>
+
+              <p className="font-['Plus_Jakarta_Sans'] text-base leading-[1.5] text-[#1f1b12]">
+                {deliveryInfo.firstName} {deliveryInfo.lastName}
+                <br />
+                {deliveryInfo.address}
+                <br />
+                {deliveryInfo.city}, {deliveryInfo.postcode}
+              </p>
+            </div>
+          ) : (
+            <div>
+              <p className="text-[#564338] text-xs uppercase tracking-[0.1em] font-bold mb-2">
+                Pickup Location
+              </p>
+
+              <p className="font-['Plus_Jakarta_Sans'] text-base leading-[1.5] text-[#1f1b12]">
+                Store Pickup Selected
+                <br />
+                Ready for collection at nearest branch
+              </p>
+            </div>
+          )}
           <div>
-            <p className="text-[#564338] text-xs uppercase tracking-[0.1em] font-bold font-['Plus_Jakarta_Sans'] mb-2">
-              Shipping Address
-            </p>
-            <p className="font-['Plus_Jakarta_Sans'] text-base leading-[1.5] text-[#1f1b12]">
-              Elizabeth Thorne
-              <br />
-              42 Cotswold Lane
-              <br />
-              Oxford, OX1 4BQ
-              <br />
-              United Kingdom
-            </p>
-          </div>
-          <div>
-            <p className="text-[#564338] text-xs uppercase tracking-[0.1em] font-bold font-['Plus_Jakarta_Sans'] mb-2">
-              Method
-            </p>
             <p className="font-['Plus_Jakarta_Sans'] text-base leading-[1.5] text-[#1f1b12] flex flex-col">
-              <span className="font-bold">Express Bakery</span>
+              <span className="font-bold">
+                {deliveryMethod === 'delivery'
+                  ? 'Home Delivery'
+                  : 'Store Pickup'}
+              </span>
+
               <span className="text-[#564338]">
-                Arrives tomorrow before 10 AM
+                {deliveryMethod === 'delivery'
+                  ? 'Arrives in 3–5 business days'
+                  : 'Ready for pickup in store'}
               </span>
             </p>
           </div>
@@ -122,7 +146,8 @@ export default function Review({
       {/* Navigation Buttons */}
       <div className="flex flex-col md:flex-row gap-4 pt-8">
         <button
-          onClick={() => setSteps(steps + 1)}
+          onClick={nextStep}
+          disabled={!isValid}
           className="flex-1 px-8 py-4 bg-[#bb5808] text-[#fffbff] text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] rounded-xl shadow-lg hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
         >
           CONTINUE TO PAYMENT
@@ -134,7 +159,7 @@ export default function Review({
           </span>
         </button>
         <button
-          onClick={() => setSteps(steps - 1)}
+          onClick={prevStep}
           className="px-8 py-4 border-2 border-[#974400] text-[#974400] text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] rounded-xl hover:bg-[#974400]/5 active:scale-[0.98] transition-all"
         >
           BACK TO DELIVERY

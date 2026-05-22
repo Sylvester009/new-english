@@ -8,12 +8,20 @@ import Payment from '../components/payment';
 import Header from '../components/header';
 import Footer from '../components/footer';
 import {useCartStore} from '@/store/cart-store';
+import {useCheckoutStore} from '@/store/checkout-store';
+import useHydrated from '@/hooks/useHydrated';
 
 export default function Checkout() {
-  const [steps, setSteps] = useState(1);
+  const step = useCheckoutStore(state => state.step);
   const items = useCartStore(state => state.items);
   const subtotal = useCartStore(state => state.subtotal);
   const subTotal = subtotal();
+
+  const hydrated = useHydrated();
+
+  if (!hydrated) {
+    return null;
+  }
 
   const deliveryFee = subTotal > 0 ? 8.95 : 0;
 
@@ -99,16 +107,16 @@ export default function Checkout() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-12 items-start px-4 sm:px-6 py-8 md:py-12 lg:py-10 max-w-7xl mx-auto">
         {/* Left Side: Dynamic Form */}
         <div className="lg:col-span-7 xl:col-span-8 w-full">
-          {steps === 1 ? (
-            <Info steps={steps} setSteps={setSteps} />
-          ) : steps === 2 ? (
-            <Delivery steps={steps} setSteps={setSteps} />
-          ) : steps === 3 ? (
-            <Review steps={steps} setSteps={setSteps} />
-          ) : steps === 4 ? (
-            <Payment steps={steps} setSteps={setSteps} />
+          {step === 1 ? (
+            <Info />
+          ) : step === 2 ? (
+            <Delivery />
+          ) : step === 3 ? (
+            <Review />
+          ) : step === 4 ? (
+            <Payment />
           ) : (
-            <Info steps={steps} setSteps={setSteps} />
+            <Info />
           )}
         </div>
 

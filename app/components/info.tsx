@@ -1,15 +1,14 @@
 import {useCartStore} from '@/store/cart-store';
-import {redirect} from 'next/navigation';
+import {useCheckoutStore} from '@/store/checkout-store';
+import {useRouter} from 'next/navigation';
 
-export default function Info({
-  steps,
-  setSteps,
-}: {
-  steps: number;
-  setSteps: any;
-}) {
+export default function Info() {
+  const router = useRouter();
+
   const {items, increaseQuantity, decreaseQuantity, removeFromCart} =
     useCartStore();
+  const nextStep = useCheckoutStore(state => state.nextStep);
+
   return (
     <div className="lg:col-span-7 space-y-10">
       <header className="mb-6 md:mb-8">
@@ -104,8 +103,13 @@ export default function Info({
       {/* Action Buttons */}
       <div className="flex flex-col md:flex-row gap-4 pt-8">
         <button
-          onClick={() => setSteps(steps + 1)}
-          className="flex-1 px-8 py-4 bg-[#bb5808] text-[#fffbff] text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] rounded-xl shadow-lg hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+          onClick={nextStep}
+          disabled={items.length === 0}
+          className={`flex-1 px-8 py-4 rounded-xl transition-all flex items-center justify-center gap-2 ${
+            items.length === 0
+              ? 'bg-gray-300 cursor-not-allowed'
+              : 'bg-[#bb5808] text-[#fffbff] hover:brightness-110 active:scale-[0.98]'
+          }`}
         >
           CONTINUE TO DELIVERY
           <span
@@ -117,7 +121,7 @@ export default function Info({
         </button>
         <button
           onClick={() => {
-            redirect('/store');
+            router.push('/store');
           }}
           className="px-8 py-4 border-2 border-[#974400] text-[#974400] text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] rounded-xl hover:bg-[#974400]/5 active:scale-[0.98] transition-all"
         >
