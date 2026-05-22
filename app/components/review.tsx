@@ -1,3 +1,5 @@
+import {useCartStore} from '@/store/cart-store';
+
 export default function Review({
   steps,
   setSteps,
@@ -5,6 +7,8 @@ export default function Review({
   steps: number;
   setSteps: any;
 }) {
+  const items = useCartStore(state => state.items);
+
   return (
     <div className="flex-1">
       <h1 className="font-['Noto_Serif'] text-[48px] leading-[1.2] tracking-[-0.02em] font-bold text-[#1f1b12] mb-12">
@@ -60,97 +64,58 @@ export default function Review({
       </section>
 
       {/* Order Items Section */}
+      {/* Order Items Section */}
       <section className="space-y-6">
         <h2 className="font-['Noto_Serif'] text-xl leading-[1.4] font-semibold text-[#1f1b12] mb-6">
           Your Selection
         </h2>
+
         <div className="grid gap-4">
-          {/* Item 1 - Heritage Sourdough */}
-          <div className="flex items-center gap-4 sm:gap-6 p-4 sm:p-5 bg-[#ffffff] rounded-xl border border-[#ddc1b3]/20 hover:border-[#974400]/30 transition-all group shadow-sm hover:shadow-md">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden shrink-0 bg-[#ebe1d3]">
-              <img
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                data-alt="Close-up of a rustic heritage sourdough loaf with a perfectly dusted flour crust and deep score marks"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnKUK3A9vUsptogQ5ViVulw5MtMd9quIu94hG_f1KOkJ1WOsh3SciISI0W--MoWHHwWTJkuJe5tA_76p-O81H8A31Y497ynR6REZr864wihh3_PDe1JEFN7BixaVsWtZBzIDmahSfyQ4CLmAAxISMoPEOI0oooQzoeDANOpKRMfNptM-mcosej-wHD54Is6BVOdS5fKYl0NxF-EvsMDDdvicHdwrwDJ2qD7j6FEjMghglmL_f82vJZh5sEKMUJ2wLydDYqi2hrQNY"
-              />
+          {items.length === 0 ? (
+            <div className="text-sm text-[#8a7266] text-center py-8">
+              No items in cart
             </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="font-['Noto_Serif'] text-lg leading-[1.4] font-semibold text-[#1f1b12] truncate">
-                Heritage Sourdough
-              </h3>
-              <p className="text-[#564338] text-sm mt-1">
-                Wild yeast, 48-hour fermentation
-              </p>
-              <div className="flex items-center gap-4 mt-2">
-                <span className="text-[#1f1b12] font-medium text-sm bg-[#fcf2e3] px-3 py-1 rounded-full">
-                  Qty: 2
-                </span>
-              </div>
-            </div>
-            <div className="text-right shrink-0">
-              <p className="font-['Noto_Serif'] text-lg leading-[1.4] font-semibold text-[#1f1b12]">
-                £14.00
-              </p>
-            </div>
-          </div>
+          ) : (
+            items.map(item => (
+              <div
+                key={item.id}
+                className="flex items-center gap-4 sm:gap-6 p-4 sm:p-5 bg-[#ffffff] rounded-xl border border-[#ddc1b3]/20 hover:border-[#974400]/30 transition-all group shadow-sm hover:shadow-md"
+              >
+                {/* Image */}
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden shrink-0 bg-[#ebe1d3]">
+                  <img
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    src={item.image}
+                    alt={item.name}
+                  />
+                </div>
 
-          {/* Item 2 - Cultured Butter */}
-          <div className="flex items-center gap-4 sm:gap-6 p-4 sm:p-5 bg-[#ffffff] rounded-xl border border-[#ddc1b3]/20 hover:border-[#974400]/30 transition-all group shadow-sm hover:shadow-md">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden shrink-0 bg-[#ebe1d3]">
-              <img
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                data-alt="Hand-churned cultured butter on a wooden board with sea salt flakes and a sprig of fresh thyme"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzR6BW1uMlPHdneDw3skwSTMqdUCK0-kpgdCwAt5pNJ8yTtbD1mLsorrQXXH5xNQ8vRz7nYipgoEdS3IXW_PnQzv2q9g2tPuoDIM5vR-WoFX2akTtZouC6Lu_KDN02D4_ymsEJtGuN-7eSyzCfjzTzu48P7-TgCJjrmRQT2YFrabMvsJvzJeii7b501XLos4VMMsrbpXwb5NYg_UiyAY4aVmCDt1qLS-odbj28GmbC3nkSDYjV5kVXL7nSz7XL0kvrF0PmuEqjWzY"
-              />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="font-['Noto_Serif'] text-lg leading-[1.4] font-semibold text-[#1f1b12] truncate">
-                Cultured Butter
-              </h3>
-              <p className="text-[#564338] text-sm mt-1">
-                Sea salt, churned in Devon
-              </p>
-              <div className="flex items-center gap-4 mt-2">
-                <span className="text-[#1f1b12] font-medium text-sm bg-[#fcf2e3] px-3 py-1 rounded-full">
-                  Qty: 1
-                </span>
-              </div>
-            </div>
-            <div className="text-right shrink-0">
-              <p className="font-['Noto_Serif'] text-lg leading-[1.4] font-semibold text-[#1f1b12]">
-                £6.50
-              </p>
-            </div>
-          </div>
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-['Noto_Serif'] text-lg leading-[1.4] font-semibold text-[#1f1b12] truncate">
+                    {item.name}
+                  </h3>
 
-          {/* Item 3 - Almond Croissants */}
-          <div className="flex items-center gap-4 sm:gap-6 p-4 sm:p-5 bg-[#ffffff] rounded-xl border border-[#ddc1b3]/20 hover:border-[#974400]/30 transition-all group shadow-sm hover:shadow-md">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden shrink-0 bg-[#ebe1d3]">
-              <img
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                data-alt="Basket of golden-brown almond croissants with flaky layers and toasted almond slivers on top"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8eC2By-W-4KgKbFhC-Ls7Q0gMoP5OZ4dDmF54j3b-HKop4M1ZcME5UjYx9I3mS2-SzWDGR5oN0kuOqmF962B-lwM_xjemFiBF9FuZwpy-sf5VEsSi_D0KkDrfnOUcauMlEJTFYYAibjWrIDVsDz53Ob4OMpvk9WL6Y8_H7MrEBNobVyitvWNzj-7BgScP41AE1qvl03Ah_jXHDl7B-Dale-kGT-jfe8IUWH8-SwSQ1W14QgDp9BvPYpybu8wZF2YacH6QN7ERh-8"
-              />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="font-['Noto_Serif'] text-lg leading-[1.4] font-semibold text-[#1f1b12] truncate">
-                Almond Croissants
-              </h3>
-              <p className="text-[#564338] text-sm mt-1">
-                Double-baked, marzipan core
-              </p>
-              <div className="flex items-center gap-4 mt-2">
-                <span className="text-[#1f1b12] font-medium text-sm bg-[#fcf2e3] px-3 py-1 rounded-full">
-                  Qty: 4
-                </span>
+                  <p className="text-[#564338] text-sm mt-1">
+                    {item.description}
+                  </p>
+
+                  <div className="flex items-center gap-4 mt-2">
+                    <span className="text-[#1f1b12] font-medium text-sm bg-[#fcf2e3] px-3 py-1 rounded-full">
+                      Qty: {item.quantity}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Price */}
+                <div className="text-right shrink-0">
+                  <p className="font-['Noto_Serif'] text-lg leading-[1.4] font-semibold text-[#1f1b12]">
+                    #{(item.price * item.quantity).toFixed(2)}
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="text-right shrink-0">
-              <p className="font-['Noto_Serif'] text-lg leading-[1.4] font-semibold text-[#1f1b12]">
-                £18.00
-              </p>
-            </div>
-          </div>
+            ))
+          )}
         </div>
       </section>
 

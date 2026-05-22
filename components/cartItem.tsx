@@ -1,12 +1,17 @@
-import {cartItems} from '@/data/cart';
+'use client';
+
+import {useCartStore} from '@/store/cart-store';
 import Image from 'next/image';
 
 export default function CartItem() {
+  const {items, increaseQuantity, decreaseQuantity, removeFromCart} =
+    useCartStore();
+
   return (
     <div className="flex-1 overflow-y-auto px-8 py-4 space-y-4">
       {/* <!-- Item 1 --> */}
 
-      {cartItems.map(item => (
+      {items.map(item => (
         <div key={item.id} className="flex gap-4 group pb-4">
           <div className="w-24 h-24 shrink-0 bg-[#fcf2e3] rounded-lg overflow-hidden border border-[#e2d9ca]">
             <Image
@@ -23,7 +28,7 @@ export default function CartItem() {
                 <h3 className="text-[15px] font-semibold tracking-wide primary">
                   {item.name}
                 </h3>
-                <span className="label-md primary">${item.price}</span>
+                <span className="label-md primary">#{item.price}</span>
               </div>
               <p className="body-md text-sm on-surface-variant py-1 pb-2">
                 {item.description}
@@ -32,7 +37,10 @@ export default function CartItem() {
             <div className="flex items-center justify-between">
               {/* <!-- Quantity Picker --> */}
               <div className="flex items-center border border-outline-variant rounded-lg px-3 py-1 bg-[#ffffff]">
-                <button className="on-surface-variant hover:text-terracotta transition-colors flex items-center">
+                <button
+                  onClick={() => decreaseQuantity(item.id)}
+                  className="on-surface-variant hover:text-terracotta transition-colors flex items-center"
+                >
                   <span
                     className="material-symbols-outlined text-sm"
                     data-icon="remove"
@@ -41,7 +49,10 @@ export default function CartItem() {
                   </span>
                 </button>
                 <span className="px-4 label-md">{item.quantity}</span>
-                <button className="on-surface-variant hover:text-terracotta transition-colors flex items-center">
+                <button
+                  onClick={() => increaseQuantity(item.id)}
+                  className="on-surface-variant hover:text-terracotta transition-colors flex items-center"
+                >
                   <span
                     className="material-symbols-outlined text-sm"
                     data-icon="add"
@@ -50,7 +61,10 @@ export default function CartItem() {
                   </span>
                 </button>
               </div>
-              <button className="text-outline hover:text-error transition-colors flex items-center gap-1">
+              <button
+                onClick={() => removeFromCart(item.id)}
+                className="text-outline hover:text-error transition-colors flex items-center gap-1"
+              >
                 <span
                   className="material-symbols-outlined text-lg"
                   data-icon="delete"

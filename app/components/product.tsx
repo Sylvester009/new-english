@@ -1,9 +1,11 @@
-import {useEffect, useMemo, useState} from 'react';
+'use client';
+
 import {ProductType} from '../data';
 import Link from 'next/link';
 import Image from 'next/image';
 import {useProducts} from '@/hooks/useProducts';
 import localProducts from '@/data/products.json';
+import {useCartStore} from '@/store/cart-store';
 
 type ProductListProps = {
   productType: ProductType;
@@ -16,6 +18,8 @@ export default function ProductList({productType, search}: ProductListProps) {
     search,
     initialData: localProducts.filter(p => p.category === productType),
   });
+
+  const addToCart = useCartStore(state => state.addToCart);
 
   if (isLoading) {
     return (
@@ -62,12 +66,11 @@ export default function ProductList({productType, search}: ProductListProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
       {products.map(product => (
-        <Link
+        <div
           key={product.id}
-          href={`/${product.id}`}
-          className="block cursor-pointer"
+          className="bg-[#fffaf5] rounded-2xl p-5 border border-[#eadccf] hover:-translate-y-1 transition-all duration-500"
         >
-          <div className="bg-[#fffaf5] rounded-2xl p-5 border border-[#eadccf] hover:-translate-y-1 transition-all duration-500">
+          <Link href={`/${product.id}`} className="block cursor-pointer">
             <div className="relative overflow-hidden rounded-2xl mb-4 aspect-4/3 bg-[#fcf2e3] border border-stone-100">
               <Image
                 alt={product.name}
@@ -87,19 +90,22 @@ export default function ProductList({productType, search}: ProductListProps) {
                 </div>
               )}
             </div>
-            <div className="space-y-3">
-              <h3 className="title-sm primary leading-snug">{product.name}</h3>
-              <div className="flex justify-between items-center">
-                <span className="text-[20px] italic text-[#974400] font-medium">
-                  #{product.price.toFixed(2)}
-                </span>
-                <button className="border border-[#974400] text-[#974400] bg-transparent hover:bg-[#974400] hover:text-white p-2 rounded-lg hover:opacity-90 transition-all active:scale-95 flex items-center justify-center">
-                  <span className="material-symbols-outlined">add</span>
-                </button>
-              </div>
+          </Link>
+          <div className="space-y-3">
+            <h3 className="title-sm primary leading-snug">{product.name}</h3>
+            <div className="flex justify-between items-center">
+              <span className="text-[20px] italic text-[#974400] font-medium">
+                #{product.price.toFixed(2)}
+              </span>
+              <button
+                onClick={() => addToCart(product)}
+                className="border border-[#974400] text-[#974400] bg-transparent hover:bg-[#974400] hover:text-white p-2 rounded-lg hover:opacity-90 transition-all active:scale-95 flex items-center justify-center"
+              >
+                <span className="material-symbols-outlined">add</span>
+              </button>
             </div>
           </div>
-        </Link>
+        </div>
       ))}
     </div>
   );

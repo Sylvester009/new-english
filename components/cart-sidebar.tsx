@@ -2,8 +2,21 @@
 
 import Link from 'next/link';
 import CartItem from './cartItem';
+import {useCartStore} from '@/store/cart-store';
+import {useEffect, useState} from 'react';
 
 export function CartSidebar({open, onClose}: {open: boolean; onClose: any}) {
+  const items = useCartStore(state => state.items);
+  const subtotal = useCartStore(state => state.subtotal);
+  const subtotalValue = subtotal();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
   return (
     <>
       <div
@@ -28,7 +41,7 @@ export function CartSidebar({open, onClose}: {open: boolean; onClose: any}) {
               Your Cart
             </h2>
             <span className="bg-s[#ebe1d3] on-surface px-2 py-0.5 rounded-full label-md">
-              3 Items
+              {items.length || 0} Items
             </span>
           </div>
           <button
@@ -50,7 +63,9 @@ export function CartSidebar({open, onClose}: {open: boolean; onClose: any}) {
           <div className="space-y-3 mb-6">
             <div className="flex justify-between body-md on-surface-variant">
               <span>Subtotal</span>
-              <span className="on-surface font-semibold">$39.50</span>
+              <span className="on-surface font-semibold">
+                #{mounted ? subtotalValue : 0}
+              </span>
             </div>
             <div className="flex justify-between body-md on-surface-variant">
               <span>Shipping</span>
@@ -58,7 +73,9 @@ export function CartSidebar({open, onClose}: {open: boolean; onClose: any}) {
             </div>
             <div className="flex justify-between text-[15px] font-semibold tracking-wide primary pt-2 border-t border-[#e2d9ca]">
               <span>Total</span>
-              <span className="text-[#974400]">$39.50</span>
+              <span className="text-[#974400]">
+                #{mounted ? subtotalValue : 0}
+              </span>
             </div>
           </div>
           <div className="space-y-3">

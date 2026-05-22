@@ -1,31 +1,36 @@
 'use client';
 
-import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Footer from './footer';
 import Header from './header';
-import { Product } from '@/types/product';
+import {Product} from '@/types/product';
+import {useCartStore} from '@/store/cart-store';
+import {useState} from 'react';
 
 interface ProductDetailsProps {
   product: Product;
   relatedProducts: Product[];
 }
 
-export default function ProductDetails({ product, relatedProducts }: ProductDetailsProps) {
+export default function ProductDetails({
+  product,
+  relatedProducts,
+}: ProductDetailsProps) {
   const [quantity, setQuantity] = useState(1);
-  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
-  const handleQuantityChange = (change: number) => {
-    setQuantity(prev => Math.max(1, prev + change));
-  };
+  const addToCart = useCartStore(state => state.addToCart);
 
-  const handleAddToCart = async () => {
-    setIsAddingToCart(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 500));
-    console.log(`Added ${quantity} of ${product.name} to cart`);
-    setIsAddingToCart(false);
+  const [isAdding, setIsAdding] = useState(false);
+
+  const handleAddToCart = () => {
+    setIsAdding(true);
+
+    addToCart(product, quantity);
+
+    setTimeout(() => {
+      setIsAdding(false);
+    }, 500);
   };
 
   return (
@@ -33,18 +38,28 @@ export default function ProductDetails({ product, relatedProducts }: ProductDeta
       <Header />
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 lg:pt-14 pb-20">
         {/* Breadcrumb with Schema.org markup */}
-        <nav className="mb-6 flex items-center gap-2 text-sm font-medium font-['Plus_Jakarta_Sans'] text-[#8a7266]" aria-label="Breadcrumb">
-          <Link className="hover:text-[#974400] transition-colors" href="/store">
+        <nav
+          className="mb-6 flex items-center gap-2 text-sm font-medium font-['Plus_Jakarta_Sans'] text-[#8a7266]"
+          aria-label="Breadcrumb"
+        >
+          <Link
+            className="hover:text-[#974400] transition-colors"
+            href="/store"
+          >
             Home
           </Link>
-          <span className="material-symbols-outlined text-sm">chevron_right</span>
-          <Link 
-            className="hover:text-[#974400] transition-colors" 
+          <span className="material-symbols-outlined text-sm">
+            chevron_right
+          </span>
+          <Link
+            className="hover:text-[#974400] transition-colors"
             href={`/store?category=${encodeURIComponent(product.category)}`}
           >
             {product.category}
           </Link>
-          <span className="material-symbols-outlined text-sm">chevron_right</span>
+          <span className="material-symbols-outlined text-sm">
+            chevron_right
+          </span>
           <span className="text-[#974400] font-bold" aria-current="page">
             {product.name}
           </span>
@@ -89,10 +104,10 @@ export default function ProductDetails({ product, relatedProducts }: ProductDeta
 
             <div className="flex items-baseline gap-4 pt-1">
               <span className="font-['Noto_Serif'] text-[32px] leading-[1.3] font-semibold text-[#974400]">
-                £{product.price.toFixed(2)}
+                #{product.price.toFixed(2)}
               </span>
               <span className="text-[#564338] line-through font-['Plus_Jakarta_Sans'] text-base leading-normal">
-                £{(product.price * 1.2).toFixed(2)}
+                #{(product.price * 1.2).toFixed(2)}
               </span>
               <span className="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">
                 Save 20%
@@ -109,10 +124,10 @@ export default function ProductDetails({ product, relatedProducts }: ProductDeta
             <div className="flex flex-col gap-4 mt-2">
               <div className="flex items-center gap-4">
                 <div className="flex items-center border-2 border-[#ddc1b3] rounded-xl p-1 bg-[#ffffff] shadow-sm">
-                  <button 
-                    onClick={() => handleQuantityChange(-1)}
-                    className="w-10 h-10 flex items-center justify-center hover:bg-[#fcf2e3] rounded-lg transition-colors disabled:opacity-50"
+                  <button
+                    onClick={() => setQuantity(q => Math.max(1, q - 1))}
                     disabled={quantity <= 1}
+                    className="w-10 h-10 flex items-center justify-center hover:bg-[#fcf2e3] rounded-lg transition-colors disabled:opacity-50"
                     aria-label="Decrease quantity"
                   >
                     <span className="material-symbols-outlined text-[#1f1b12]">
@@ -122,8 +137,8 @@ export default function ProductDetails({ product, relatedProducts }: ProductDeta
                   <span className="w-12 text-center font-bold text-[#1f1b12] font-['Plus_Jakarta_Sans']">
                     {quantity}
                   </span>
-                  <button 
-                    onClick={() => handleQuantityChange(1)}
+                  <button
+                    onClick={() => setQuantity(q => Math.max(1, q + 1))}
                     className="w-10 h-10 flex items-center justify-center hover:bg-[#fcf2e3] rounded-lg transition-colors"
                     aria-label="Increase quantity"
                   >
@@ -132,15 +147,14 @@ export default function ProductDetails({ product, relatedProducts }: ProductDeta
                     </span>
                   </button>
                 </div>
-                <button 
+                <button
                   onClick={handleAddToCart}
-                  disabled={isAddingToCart}
                   className="flex-1 bg-[#4A3F35] text-[#FDF8F5] py-3.5 rounded-xl font-bold font-['Plus_Jakarta_Sans'] tracking-wide shadow-md hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="material-symbols-outlined text-sm">
-                    {isAddingToCart ? 'hourglass_empty' : 'shopping_bag'}
+                    {isAdding ? 'hourglass_empty' : 'shopping_bag'}
                   </span>
-                  {isAddingToCart ? 'Adding...' : 'Add to Bag'}
+                  {isAdding ? 'Adding...' : 'Add to Bag'}
                 </button>
               </div>
               <div className="flex items-center gap-2 text-sm text-[#ba1a1a] mt-1 font-['Plus_Jakarta_Sans'] font-medium">
@@ -198,29 +212,31 @@ export default function ProductDetails({ product, relatedProducts }: ProductDeta
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {relatedProducts.map(item => (
-              <div
-                key={item.id}
-                className="bg-[#ffffff] rounded-xl border border-[#ddc1b3]/50 p-4 shadow-sm hover:shadow-md transition-all group"
-              >
-                <div className="aspect-square rounded-lg overflow-hidden mb-4 bg-[#f6edde]">
-                  <img
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    src={item.image}
-                    alt={item.name}
-                  />
+                <div
+                  key={item.id}
+                  className="bg-[#ffffff] rounded-xl border border-[#ddc1b3]/50 p-4 shadow-sm hover:shadow-md transition-all group"
+                >
+                  <div className="aspect-square rounded-lg overflow-hidden mb-4 bg-[#f6edde]">
+                    <img
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      src={item.image}
+                      alt={item.name}
+                    />
+                  </div>
+                  <h4 className="font-['Noto_Serif'] text-lg font-semibold text-[#1f1b12] mb-1">
+                    {item.name}
+                  </h4>
+                  <p className="text-sm font-bold font-['Plus_Jakarta_Sans'] text-[#564338] mb-4">
+                    £{item.price.toFixed(2)}
+                  </p>
+                  <button className="w-full py-2.5 bg-[#fcc340] text-[#6f5100] font-bold font-['Plus_Jakarta_Sans'] rounded-xl text-sm flex items-center justify-center gap-2 hover:brightness-105 active:scale-[0.98] transition-all">
+                    <span className="material-symbols-outlined text-sm">
+                      add
+                    </span>
+                    Quick Add
+                  </button>
                 </div>
-                <h4 className="font-['Noto_Serif'] text-lg font-semibold text-[#1f1b12] mb-1">
-                  {item.name}
-                </h4>
-                <p className="text-sm font-bold font-['Plus_Jakarta_Sans'] text-[#564338] mb-4">
-                  £{item.price.toFixed(2)}
-                </p>
-                <button className="w-full py-2.5 bg-[#fcc340] text-[#6f5100] font-bold font-['Plus_Jakarta_Sans'] rounded-xl text-sm flex items-center justify-center gap-2 hover:brightness-105 active:scale-[0.98] transition-all">
-                  <span className="material-symbols-outlined text-sm">add</span>
-                  Quick Add
-                </button>
-              </div>
-            ))}
+              ))}
             </div>
           </section>
         )}
@@ -326,10 +342,10 @@ export default function ProductDetails({ product, relatedProducts }: ProductDeta
       {/* Bottom Navigation Bar (Mobile only) */}
       <nav className="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-safe pt-2 bg-[#FDF8F5]/95 backdrop-blur-md border-t border-stone-200 z-50 shadow-[0_-4px_20px_rgba(74,63,53,0.04)] rounded-t-2xl">
         {[
-          { icon: 'storefront', label: 'Shop', href: '/store', active: false },
-          { icon: 'search', label: 'Search', href: '/search', active: false },
-          { icon: 'shopping_bag', label: 'Cart', href: '/cart', active: false },
-          { icon: 'person', label: 'Account', href: '/account', active: false },
+          {icon: 'storefront', label: 'Shop', href: '/store', active: false},
+          {icon: 'search', label: 'Search', href: '/search', active: false},
+          {icon: 'shopping_bag', label: 'Cart', href: '/cart', active: false},
+          {icon: 'person', label: 'Account', href: '/account', active: false},
         ].map(item => (
           <Link
             key={item.label}

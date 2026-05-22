@@ -1,9 +1,10 @@
 'use client';
 
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import {CartSidebar} from '@/components/cart-sidebar';
 import {ShoppingCart} from 'lucide-react';
 import {usePathname} from 'next/navigation';
+import {useCartStore} from '@/store/cart-store';
 
 export default function ClientLayout({
   children,
@@ -12,32 +13,9 @@ export default function ClientLayout({
 }>) {
   const [open, setOpen] = useState(false);
   const pathName = usePathname();
-  const [cartCount, setCartCount] = useState(0);
+  const items = useCartStore(state => state.items);
 
-  // Load cart count from localStorage
-  useEffect(() => {
-    const updateCartCount = () => {
-      if (typeof window !== 'undefined') {
-        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-        const count = cart.reduce(
-          (sum: number, item: {quantity: number}) => sum + (item.quantity || 1),
-          0,
-        );
-        setCartCount(count);
-      }
-    };
-
-    updateCartCount();
-
-    // Listen for cart updates
-    window.addEventListener('cartUpdated', updateCartCount);
-    window.addEventListener('storage', updateCartCount);
-
-    return () => {
-      window.removeEventListener('cartUpdated', updateCartCount);
-      window.removeEventListener('storage', updateCartCount);
-    };
-  }, []);
+  const totalCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
   // Determine which pages should NOT show the cart button
   const isHomepage = pathName === '/';
@@ -68,7 +46,7 @@ export default function ClientLayout({
       {shouldShowCart && (
         <button
           onClick={() => setOpen(true)}
-          aria-label={`Open cart with ${cartCount} items`}
+          aria-label={`Open cart with ${items.length} items`}
           className="
             fixed bottom-6 right-6 z-50
             h-14 w-14 rounded-full
@@ -82,7 +60,7 @@ export default function ClientLayout({
         >
           <ShoppingCart className="h-6 w-6 group-hover:rotate-12 transition-transform" />
 
-          {cartCount > 0 && (
+          {items.length > 0 && (
             <span
               className="
               absolute -top-1 -right-1 
@@ -93,7 +71,7 @@ export default function ClientLayout({
               shadow-md animate-in zoom-in duration-200
             "
             >
-              {cartCount > 99 ? '99+' : cartCount}
+              {totalCount > 99 ? '99+' : totalCount}
             </span>
           )}
         </button>

@@ -7,9 +7,19 @@ import Review from '../components/review';
 import Payment from '../components/payment';
 import Header from '../components/header';
 import Footer from '../components/footer';
+import {useCartStore} from '@/store/cart-store';
 
 export default function Checkout() {
   const [steps, setSteps] = useState(1);
+  const items = useCartStore(state => state.items);
+  const subtotal = useCartStore(state => state.subtotal);
+  const subTotal = subtotal();
+
+  const deliveryFee = subTotal > 0 ? 8.95 : 0;
+
+  const tax = subTotal * 0.075;
+
+  const total = subTotal + deliveryFee + tax;
 
   return (
     <main className="max-w-full bg-[#fff8f1]">
@@ -110,84 +120,67 @@ export default function Checkout() {
 
           {/* Items List - Optimized spacing */}
           <div className="space-y-5 mb-6 max-h-[360px] overflow-y-auto pr-2 custom-scrollbar">
-            {/* Item 1 */}
-            <div className="flex gap-3.5 p-2 -mx-2 rounded-lg hover:bg-[#fcf2e3]/50 transition-colors">
-              <div className="w-[72px] h-[72px] rounded-xl overflow-hidden shrink-0 bg-[#ebe1d3] border border-[#ebe1d3]/50">
-                <img
-                  alt="Artisan Sourdough"
-                  className="w-full h-full object-cover"
-                  data-alt="close-up of artisan sourdough bread on dark marble countertop with dramatic side lighting and flour dusting"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnWh5Ki80o8C9O3lukOCmfWKd9LXXnVcDau5xFywLzId0mVQQdTwhtJIG2-6GCH5ddUKVPysc6hQ6cW0QfNgVMS5u1iIJjADxLYZxmJU8lZhBAwgUq7bmDoP9-vmMON_2HnMDpXHdWv9Y3kreBSIITRS8l5DUcrecAOF27bi5ZH8EG_QKep5PLg9CGz2TDtzbmU8ree_dr8t6zlYtGfCo2operIK7A9bwtdtaboX3lintrX8p9COLAxob6aTIFlLyadFPZvKhrf7c"
-                />
+            {items.length === 0 ? (
+              <div className="text-center text-sm text-[#564338] py-10">
+                Your cart is empty
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] text-[#1f1b12] truncate">
-                  Country Sourdough Loaf
-                </div>
-                <div className="text-[#564338] text-xs mt-1.5">Quantity: 1</div>
-                <div className="text-[#974400] font-bold mt-1.5">£6.50</div>
-              </div>
-            </div>
+            ) : (
+              items.map(item => (
+                <div
+                  key={item.id}
+                  className="flex gap-3.5 p-2 -mx-2 rounded-lg hover:bg-[#fcf2e3]/50 transition-colors"
+                >
+                  <div className="w-[72px] h-[72px] rounded-xl overflow-hidden shrink-0 bg-[#ebe1d3] border border-[#ebe1d3]/50">
+                    <img
+                      alt={item.name}
+                      className="w-full h-full object-cover"
+                      src={item.image}
+                    />
+                  </div>
 
-            {/* Item 2 */}
-            <div className="flex gap-3.5 p-2 -mx-2 rounded-lg hover:bg-[#fcf2e3]/50 transition-colors">
-              <div className="w-[72px] h-[72px] rounded-xl overflow-hidden shrink-0 bg-[#ebe1d3] border border-[#ebe1d3]/50">
-                <img
-                  alt="Organic Strawberry Jam"
-                  className="w-full h-full object-cover"
-                  data-alt="jar of organic dark red strawberry jam with gold lid on a rustic wooden table with morning light"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSnpx1m2Qde6T7M2cW1NoQ5wGtImzGYtQphWExJSDy6HM1cK-Ut7jbWYsHYN-7PWDECUpFzk68Ww_TxBxTHFU16PGp_DpigEHiL77QCOnIo-B330i-76uBpbWgZ3Dkb89-qVlXfhn41zUE6G20zHWkTAbE1PCZ5AKeW_yd-Jq32kb-wMZq8Xa_H2f11FNflM2uxLpOueAzlHbefPW056sszkmP-ONJcClzuJ__gjM5CuMIup4M7zF9ojp0u5YejbG9S-h8ny6hs9g"
-                />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] text-[#1f1b12] truncate">
-                  Estate Strawberry Jam
-                </div>
-                <div className="text-[#564338] text-xs mt-1.5">Quantity: 2</div>
-                <div className="text-[#974400] font-bold mt-1.5">£14.00</div>
-              </div>
-            </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] text-[#1f1b12] truncate">
+                      {item.name}
+                    </div>
 
-            {/* Item 3 */}
-            <div className="flex gap-3.5 p-2 -mx-2 rounded-lg hover:bg-[#fcf2e3]/50 transition-colors">
-              <div className="w-[72px] h-[72px] rounded-xl overflow-hidden shrink-0 bg-[#ebe1d3] border border-[#ebe1d3]/50">
-                <img
-                  alt="Premium Olive Oil"
-                  className="w-full h-full object-cover"
-                  data-alt="tall elegant dark glass bottle of premium extra virgin olive oil with gold labeling and olive branch shadows"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuC84U2ZxWHSEj3J9ytUG-L96Ikc9FQ17GSTzTM8abuHQxKwNQn5gEv5jDrYru_pMcP-T8l77vCCoVKGnaSyzveQTAS2LPjDL1nC1cMjdx8K-j8DZcAjNvKFir-48EIfA9YRdLuX2qnfhMLTICC10R8xpQjZUwdH8OzEf4DPglyY38XuttnIkf3Z_0oqOFRgdoNvhlynCa94afnBWXF78JbZxIlDNtHYLHtSlNCmUkuKIdvqUnafki9rRCfeRbcPGbLhvgde6UEjLT8"
-                />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] text-[#1f1b12] truncate">
-                  Sicilian Extra Virgin Oil
+                    <div className="text-[#564338] text-xs mt-1.5">
+                      Quantity: {item.quantity}
+                    </div>
+
+                    <div className="text-[#974400] font-bold mt-1.5">
+                      #{(item.price * item.quantity).toFixed(2)}
+                    </div>
+                  </div>
                 </div>
-                <div className="text-[#564338] text-xs mt-1.5">Quantity: 1</div>
-                <div className="text-[#974400] font-bold mt-1.5">£24.50</div>
-              </div>
-            </div>
+              ))
+            )}
           </div>
 
           {/* Price Breakdown - Optimized spacing */}
           <div className="space-y-2.5 pt-5 border-t border-[#ebe1d3]">
             <div className="flex justify-between text-sm text-[#564338]">
               <span>Subtotal</span>
-              <span className="font-medium">£45.00</span>
+              <span className="font-medium">#{subTotal.toFixed(2)}</span>
             </div>
+
             <div className="flex justify-between text-sm text-[#564338]">
               <span>Delivery Fee</span>
-              <span className="text-[#795900] font-medium">£8.95</span>
+              <span className="text-[#795900] font-medium">
+                #{deliveryFee.toFixed(2)}
+              </span>
             </div>
+
             <div className="flex justify-between text-sm text-[#564338]">
               <span>Tax (VAT)</span>
-              <span className="font-medium">£3.20</span>
+              <span className="font-medium">#{tax.toFixed(2)}</span>
             </div>
+
             <div className="flex justify-between items-baseline pt-4 border-t border-[#ebe1d3]">
               <span className="text-[32px] leading-[1.3] font-semibold text-[#1f1b12]">
                 Total
               </span>
-              <span className="text-[32px] leading-[1.3] font-semibold text-[#974400]">
-                £57.15
+              <span className="text-[24px] leading-[1.3] font-semibold text-[#974400]">
+                #{total.toFixed(2)}
               </span>
             </div>
           </div>
