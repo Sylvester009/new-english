@@ -11,7 +11,6 @@ export async function GET(
     try {
         const { id } = await context.params;
 
-        // Find product by id
         const product = products.find(p => p.id === id);
 
         if (!product) {

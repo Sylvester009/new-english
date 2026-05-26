@@ -6,6 +6,7 @@ import path from 'path';
 import { LoginFormSchema, SignupFormSchema, FormState } from '@/app/lib/definitions';
 import { createSession } from '../lib/session';
 import { redirect } from 'next/navigation';
+import { createClient } from '@/lib/supabase/server';
 
 export async function signup(state: FormState, formData: FormData) {
     // Validate form fields using Zod
@@ -22,61 +23,29 @@ export async function signup(state: FormState, formData: FormData) {
         };
     }
 
-    const { name, email, password } = validatedFields.data;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const jsonFilePath = path.join(process.cwd(), 'data/users.json');
+    const { name, email, password } = validatedFields.data
+    const supabase = await createClient()
 
-    // We declare this outside the try block so redirect() can read it safely later
-    let signupSuccessful = false;
-    let newUserId = '';
+    // 3. Insert the user into the database or call an Auth Library's API
+    const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+            emailRedirectTo: 'http://localhost:3000/auth/callback',
+            data: {
+                full_name: name, // This stores the name inside user metadata
+            },
+        },
+    })
 
-    try {
-        // 1. Read existing users from data.json safely
-        let users = [];
-        try {
-            const fileContent = await fs.readFile(jsonFilePath, 'utf8');
-            users = JSON.parse(fileContent);
-        } catch (readError: any) {
-            if (readError.code !== 'ENOENT') {
-                throw readError;
-            }
-        }
 
-        // 2. Business Logic: Check if user already exists
-        const userExists = users.some((user: any) => user.email === email);
-        if (userExists) {
-            return {
-                message: 'A user with this email already exists.',
-            };
-        }
-
-        // 3. Create a unique ID and new user object
-        newUserId = `user-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-        const newUser = {
-            id: newUserId,
-            name,
-            email,
-            password: hashedPassword,
-        };
-
-        // 4. Push new user and save back to data.json
-        users.push(newUser);
-        await fs.writeFile(jsonFilePath, JSON.stringify(users, null, 2), 'utf8');
-
-        // Establish session on the server side
-        await createSession(newUserId);
-        signupSuccessful = true;
-
-    } catch (error) {
-        console.error('File system signup error:', error);
+    if (error) {
         return {
-            message: 'An error occurred while creating your account.',
-        };
+            message: error.message,
+        }
     }
 
-    if (signupSuccessful) {
-        redirect('/store');
-    }
+    redirect("/store")
 }
 
 
@@ -95,58 +64,20 @@ export async function login(state: FormState, formData: FormData) {
     }
 
     const { email, password } = validatedFields.data;
-    const jsonFilePath = path.join(process.cwd(), 'data/users.json');
+    const supabase = await createClient()
 
-    // We declare this outside the try block so redirect() can read it safely later
-    let loginSuccessful = false;
-    let userId = '';
+    // 3. Insert the user into the database or call an Auth Library's API
+    const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+    })
 
-    try {
-        // 1. Read existing users from data.json
-        let users = [];
-        try {
-            const fileContent = await fs.readFile(jsonFilePath, 'utf8');
-            users = JSON.parse(fileContent);
-        } catch (readError: any) {
-            if (readError.code === 'ENOENT') {
-                return {
-                    message: 'No users found. Please sign up first.',
-                };
-            }
-            throw readError;
-        }
 
-        // 2. Find user by email
-        const user = users.find((user: any) => user.email === email);
-        
-        if (!user) {
-            return {
-                message: 'No users found. Please sign up first.',
-            };
-        }
-
-        // 3. Verify password
-        const passwordMatch = await bcrypt.compare(password, user.password);
-        
-        if (!passwordMatch) {
-            return {
-                message: 'Invalid email or password.',
-            };
-        }
-
-        // 4. Create session with user ID
-        userId = user.id;
-        await createSession(userId);
-        loginSuccessful = true;
-
-    } catch (error) {
-        console.error('Login error:', error);
+    if (error) {
         return {
-            message: 'An error occurred while logging in.',
-        };
+            message: error.message,
+        }
     }
 
-    if (loginSuccessful) {
-        redirect('/store');
-    }
+    redirect("/store")
 }
