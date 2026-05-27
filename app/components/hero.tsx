@@ -40,7 +40,7 @@ export default function Hero() {
               </button>
             </Link>
             <Link href="/store">
-              <button className="bg-white/80 backdrop-blur-sm border-2 border-[#974400] primary px-8 py-4 rounded-lg label-bold hover:bg-[#974400] hover:text-white transition-all">
+              <button className="bg-white/80 backdrop-blur-sm border-2 border-[#974400]/50 px-8 py-4 rounded-lg label-bold hover:bg-[#974400] hover:text-white transition-all">
                 Order Fresh Bread
               </button>
             </Link>

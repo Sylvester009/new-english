@@ -1,9 +1,10 @@
-'use client';
-
+import {getAllSystemUsers} from '@/lib/supabase/adminUtils';
 import Sidebar from '../components/sidebar';
 import TopAppBar from '../components/top-appbar';
 
-export default function Customers() {
+export default async function Customers() {
+  const users = await getAllSystemUsers();
+  console.log(users);
   return (
     <>
       <Sidebar />
@@ -25,7 +26,7 @@ export default function Customers() {
               </p>
             </div>
             <div className="flex gap-3">
-              <button className="flex items-center gap-2 px-6 py-3 border-2 border-[#ddc1b3] rounded-xl text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-[#8a7266] hover:bg-[#ebe1d3] active:scale-[0.98] transition-all">
+              <button className="flex items-center gap-2 px-6 py-3 border-2 border-[#ddc1b3] rounded-xl text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] text-[#8a7266] hover:bg-[#ebe1d3] active:scale-[0.98] transition-all">
                 <span
                   className="material-symbols-outlined"
                   data-icon="download"
@@ -34,7 +35,7 @@ export default function Customers() {
                 </span>
                 <span>Export CSV</span>
               </button>
-              <button className="flex items-center gap-2 px-6 py-3 bg-[#93405f] text-white rounded-xl text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] hover:bg-[#b15878] active:scale-[0.98] transition-all shadow-md">
+              <button className="flex items-center gap-2 px-6 py-3 bg-[#93405f] text-white rounded-xl text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] hover:bg-[#b15878] active:scale-[0.98] transition-all shadow-md">
                 <span
                   className="material-symbols-outlined"
                   data-icon="person_add"
@@ -49,7 +50,7 @@ export default function Customers() {
           {/* Stats Grid */}
           <section className="grid grid-cols-1 md:grid-cols-4 gap-4 lg:gap-6">
             <div className="bg-[#ffffff] p-5 lg:p-6 rounded-xl border border-orange-50/50 shadow-sm hover:shadow-md transition-shadow">
-              <p className="text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-stone-500 mb-2">
+              <p className="text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] text-stone-500 mb-2">
                 TOTAL CUSTOMERS
               </p>
               <h3 className="font-['Noto_Serif'] text-3xl font-bold text-[#1f1b12]">
@@ -66,7 +67,7 @@ export default function Customers() {
               </div>
             </div>
             <div className="bg-[#ffffff] p-5 lg:p-6 rounded-xl border border-orange-50/50 shadow-sm hover:shadow-md transition-shadow">
-              <p className="text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-stone-500 mb-2">
+              <p className="text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] text-stone-500 mb-2">
                 ACTIVE SESSIONS
               </p>
               <h3 className="font-['Noto_Serif'] text-3xl font-bold text-[#1f1b12]">
@@ -83,7 +84,7 @@ export default function Customers() {
               </div>
             </div>
             <div className="bg-[#ffffff] p-5 lg:p-6 rounded-xl border border-orange-50/50 shadow-sm hover:shadow-md transition-shadow">
-              <p className="text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-stone-500 mb-2">
+              <p className="text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] text-stone-500 mb-2">
                 AVG. ORDER VALUE
               </p>
               <h3 className="font-['Noto_Serif'] text-3xl font-bold text-[#1f1b12]">
@@ -100,7 +101,7 @@ export default function Customers() {
               </div>
             </div>
             <div className="bg-[#ffffff] p-5 lg:p-6 rounded-xl border border-orange-50/50 shadow-sm hover:shadow-md transition-shadow">
-              <p className="text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-stone-500 mb-2">
+              <p className="text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] text-stone-500 mb-2">
                 LOYALTY MEMBERS
               </p>
               <h3 className="font-['Noto_Serif'] text-3xl font-bold text-[#1f1b12]">
@@ -124,249 +125,112 @@ export default function Customers() {
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-[#fcf2e3] border-b border-orange-100">
-                    <th className="px-6 lg:px-8 py-5 text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-stone-600">
+                    <th className="px-6 lg:px-8 py-5 text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] text-stone-600">
                       CUSTOMER
                     </th>
-                    <th className="px-6 lg:px-8 py-5 text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-stone-600">
+                    <th className="px-6 lg:px-8 py-5 text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] text-stone-600">
                       JOIN DATE
                     </th>
-                    <th className="px-6 lg:px-8 py-5 text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-stone-600">
+                    <th className="px-6 lg:px-8 py-5 text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] text-stone-600">
                       ORDER HISTORY
                     </th>
-                    <th className="px-6 lg:px-8 py-5 text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-stone-600">
+                    <th className="px-6 lg:px-8 py-5 text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] text-stone-600">
                       TOTAL SPENT
                     </th>
-                    <th className="px-6 lg:px-8 py-5 text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-stone-600">
+                    <th className="px-6 lg:px-8 py-5 text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] text-stone-600">
                       STATUS
                     </th>
                     <th className="px-6 lg:px-8 py-5"></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-orange-50">
-                  {/* Customer Row 1 - Alastair Thorne */}
-                  <tr className="hover:bg-orange-50/30 transition-colors group">
-                    <td className="px-6 lg:px-8 py-6">
-                      <div className="flex items-center gap-4">
-                        <div className="relative">
-                          <img
-                            className="h-12 w-12 rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300 ring-2 ring-[#fcc340]/20"
-                            data-alt="professional portrait of a man in a beige linen shirt with warm studio lighting"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuB5Z5n8D-48ltQHL44VqU845sbPMMzeKmP57-sFQp_YsHNCPncDPeRXvA9zxsE7joNHAdNqDWcNLall1O2FS0cQm1lYfVK1BkKzMC31TQqzXqmPbLBwx8NO9Zq1E3lTmOkOAvGTu6jxe_C1bL4q1yJaRp6mbJu1Qms4QiRN5ljp6fVoiGcsNnFHZMn1voGtCH_CeV2q4fMN-slTlDqJi97-xNFvN-ixF-YnMBCJ1mnkjMGkmb4Eg-J1Jsvx6pSoFQpSCchCDNXtCVk"
-                          />
-                          <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-white"></span>
-                        </div>
-                        <div>
-                          <p className="font-['Noto_Serif'] text-lg leading-[1.4] font-semibold text-[#1f1b12]">
-                            Alastair Thorne
-                          </p>
-                          <p className="text-sm text-stone-500 font-['Plus_Jakarta_Sans']">
-                            alastair.t@lifestyle.com
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 lg:px-8 py-6 font-['Plus_Jakarta_Sans'] text-base leading-[1.5] text-[#564338]">
-                      Oct 14, 2023
-                    </td>
-                    <td className="px-6 lg:px-8 py-6">
-                      <div className="flex items-center gap-2">
-                        <span className="bg-[#ffdea0] text-[#261900] px-3 py-1 rounded-full text-xs font-bold font-['Plus_Jakarta_Sans']">
-                          24 Orders
-                        </span>
-                        <span className="text-xs text-stone-400 font-['Plus_Jakarta_Sans']">
-                          Last: 2 days ago
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 lg:px-8 py-6 font-['Noto_Serif'] text-xl font-bold text-[#974400]">
-                      £2,450.00
-                    </td>
-                    <td className="px-6 lg:px-8 py-6">
-                      <span className="bg-[#974400]/10 text-[#bb5808] px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.05em] border border-[#974400]/20 font-['Plus_Jakarta_Sans']">
-                        Platinum Member
-                      </span>
-                    </td>
-                    <td className="px-6 lg:px-8 py-6 text-right">
-                      <button className="text-stone-400 hover:text-[#974400] transition-colors p-2 rounded-full hover:bg-orange-50">
-                        <span
-                          className="material-symbols-outlined"
-                          data-icon="more_vert"
-                        >
-                          more_vert
-                        </span>
-                      </button>
-                    </td>
-                  </tr>
-                  {/* Customer Row 2 - Elena Rossi */}
-                  <tr className="hover:bg-orange-50/30 transition-colors group">
-                    <td className="px-6 lg:px-8 py-6">
-                      <div className="flex items-center gap-4">
-                        <div className="relative">
-                          <img
-                            className="h-12 w-12 rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300 ring-2 ring-[#fcc340]/20"
-                            data-alt="close-up portrait of a woman with elegant jewelry and neutral makeup in natural daylight"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuA77lTPem7USs437rNJQvIMrotj_2EDpxi7gFvaXNShO_bxOQDS-dCfX0SI580IX-wVjL6lcLuzX0KD9kpKbhtcG0foVs5Z_4tTVDm1zA2ymOL5ONdPqS5-zg8avvLkKBqApaOBO--0Y3i1jixHBjj8Nv8fxTJ0LLhPeabkfiHP2yrXdhEzxadbpb50sGgTOToAbOjqJc-tq6ASBNz0hkjR3hP0jYQWZ9Te_SarAJehwNF8fYrEmUKycYdKLs9V72iek22_ABkFJ7U"
-                          />
-                          <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-stone-300 ring-2 ring-white"></span>
-                        </div>
-                        <div>
-                          <p className="font-['Noto_Serif'] text-lg leading-[1.4] font-semibold text-[#1f1b12]">
-                            Elena Rossi
-                          </p>
-                          <p className="text-sm text-stone-500 font-['Plus_Jakarta_Sans']">
-                            elena.rossi@arch.it
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 lg:px-8 py-6 font-['Plus_Jakarta_Sans'] text-base leading-[1.5] text-[#564338]">
-                      Nov 02, 2023
-                    </td>
-                    <td className="px-6 lg:px-8 py-6">
-                      <div className="flex items-center gap-2">
-                        <span className="bg-[#ebe1d3] text-[#564338] px-3 py-1 rounded-full text-xs font-bold font-['Plus_Jakarta_Sans']">
-                          8 Orders
-                        </span>
-                        <span className="text-xs text-stone-400 font-['Plus_Jakarta_Sans']">
-                          Last: 1 week ago
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 lg:px-8 py-6 font-['Noto_Serif'] text-xl font-bold text-[#974400]">
-                      £842.20
-                    </td>
-                    <td className="px-6 lg:px-8 py-6">
-                      <span className="bg-[#93405f]/10 text-[#93405f] px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.05em] border border-[#93405f]/20 font-['Plus_Jakarta_Sans']">
-                        Gold Tier
-                      </span>
-                    </td>
-                    <td className="px-6 lg:px-8 py-6 text-right">
-                      <button className="text-stone-400 hover:text-[#974400] transition-colors p-2 rounded-full hover:bg-orange-50">
-                        <span
-                          className="material-symbols-outlined"
-                          data-icon="more_vert"
-                        >
-                          more_vert
-                        </span>
-                      </button>
-                    </td>
-                  </tr>
-                  {/* Customer Row 3 - Julian Mercer */}
-                  <tr className="hover:bg-orange-50/30 transition-colors group">
-                    <td className="px-6 lg:px-8 py-6">
-                      <div className="flex items-center gap-4">
-                        <div className="relative">
-                          <img
-                            className="h-12 w-12 rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300 ring-2 ring-[#fcc340]/20"
-                            data-alt="headshot of a middle-aged man with salt and pepper beard wearing a navy suit in a modern office setting"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCpmzE_wXwkxhLCjq3MAJKGyvcSDFLnqhAjzXsW7Wrb72ryVP7SSRvYAzAQ71gXM_RYuDz9Ptio646afegVqmxzzP11B9FzDy3R8YtuUFk-5LgoNkQxN3zZjW1rewCHUYwhaSije-In9LL1xhf_ZAgabpke9u0zPjfxmjMCuQnBu5ebRl9C-I6SUGLjBV8a32dV0JhYr15vSwzudZrfXl0ArqXq4Sv9ZCzhwhUPBaGMvnt2V5_pWnSGOHqsaLe8ae3RNKGDt7Q1U0"
-                          />
-                          <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-white"></span>
-                        </div>
-                        <div>
-                          <p className="font-['Noto_Serif'] text-lg leading-[1.4] font-semibold text-[#1f1b12]">
-                            Julian Mercer
-                          </p>
-                          <p className="text-sm text-stone-500 font-['Plus_Jakarta_Sans']">
-                            mercer.j@finance.uk
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 lg:px-8 py-6 font-['Plus_Jakarta_Sans'] text-base leading-[1.5] text-[#564338]">
-                      Dec 15, 2023
-                    </td>
-                    <td className="px-6 lg:px-8 py-6">
-                      <div className="flex items-center gap-2">
-                        <span className="bg-[#ffdea0] text-[#261900] px-3 py-1 rounded-full text-xs font-bold font-['Plus_Jakarta_Sans']">
-                          42 Orders
-                        </span>
-                        <span className="text-xs text-stone-400 font-['Plus_Jakarta_Sans']">
-                          Last: 3 hours ago
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 lg:px-8 py-6 font-['Noto_Serif'] text-xl font-bold text-[#974400]">
-                      £5,120.50
-                    </td>
-                    <td className="px-6 lg:px-8 py-6">
-                      <span className="bg-[#974400]/10 text-[#bb5808] px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.05em] border border-[#974400]/20 font-['Plus_Jakarta_Sans']">
-                        Platinum Member
-                      </span>
-                    </td>
-                    <td className="px-6 lg:px-8 py-6 text-right">
-                      <button className="text-stone-400 hover:text-[#974400] transition-colors p-2 rounded-full hover:bg-orange-50">
-                        <span
-                          className="material-symbols-outlined"
-                          data-icon="more_vert"
-                        >
-                          more_vert
-                        </span>
-                      </button>
-                    </td>
-                  </tr>
-                  {/* Customer Row 4 - Sienna Ward */}
-                  <tr className="hover:bg-orange-50/30 transition-colors group">
-                    <td className="px-6 lg:px-8 py-6">
-                      <div className="flex items-center gap-4">
-                        <div className="relative">
-                          <img
-                            className="h-12 w-12 rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300 ring-2 ring-[#fcc340]/20"
-                            data-alt="vibrant portrait of a young woman with curly hair and bright yellow top against a minimal blue wall"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9ZjTMWRva_l4XpYj07rENOLbzAqmpR1dTJ9dqo8jKVH2DN62SGuxT7JBbX3dfBnv7KvGE29ey3qzPYYcmbEQFwKwkY1UdJK-uL7RBM1m5-huEO45thQ4SW6-5X23_Xgkb9SO2fDl7u-H0lgx05KmKSlLWGlgTcPijAFpxU29LCBLQPSsPCSv3HtzdPxKlgP8RPRC9vUqCelcRuKWIc9jmHtLzjPh3XIMWqNeh07a3E8_8SbIXM23gZN-jyRYCvNE2r5gtb9Tk_ks"
-                          />
-                          <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-stone-300 ring-2 ring-white"></span>
-                        </div>
-                        <div>
-                          <p className="font-['Noto_Serif'] text-lg leading-[1.4] font-semibold text-[#1f1b12]">
-                            Sienna Ward
-                          </p>
-                          <p className="text-sm text-stone-500 font-['Plus_Jakarta_Sans']">
-                            sienna.ward@design.com
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 lg:px-8 py-6 font-['Plus_Jakarta_Sans'] text-base leading-[1.5] text-[#564338]">
-                      Jan 05, 2024
-                    </td>
-                    <td className="px-6 lg:px-8 py-6">
-                      <div className="flex items-center gap-2">
-                        <span className="bg-[#ebe1d3] text-[#564338] px-3 py-1 rounded-full text-xs font-bold font-['Plus_Jakarta_Sans']">
-                          2 Orders
-                        </span>
-                        <span className="text-xs text-stone-400 font-['Plus_Jakarta_Sans']">
-                          Last: 1 month ago
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 lg:px-8 py-6 font-['Noto_Serif'] text-xl font-bold text-[#974400]">
-                      £145.00
-                    </td>
-                    <td className="px-6 lg:px-8 py-6">
-                      <span className="bg-[#ddc1b3]/10 text-[#8a7266] px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.05em] border border-[#ddc1b3]/20 font-['Plus_Jakarta_Sans']">
-                        Standard
-                      </span>
-                    </td>
-                    <td className="px-6 lg:px-8 py-6 text-right">
-                      <button className="text-stone-400 hover:text-[#974400] transition-colors p-2 rounded-full hover:bg-orange-50">
-                        <span
-                          className="material-symbols-outlined"
-                          data-icon="more_vert"
-                        >
-                          more_vert
-                        </span>
-                      </button>
-                    </td>
-                  </tr>
+                  {users?.map(user => {
+                    // 1. Resolve dynamic name and email fields based on your dataset format
+                    const name = user.user_metadata?.full_name || 'Guest User';
+                    const email = user.email || 'No email provided';
+                    const joinedDate = new Date(
+                      user.created_at,
+                    ).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                    });
+                    const role = user.role || 'User';
+
+                    // 2. Compute a clean avatar letter fallback from the name
+                    const initials = name.charAt(0).toUpperCase();
+
+                    return (
+                      <tr
+                        key={user.id}
+                        className="hover:bg-orange-50/30 transition-colors group"
+                      >
+                        <td className="px-6 lg:px-8 py-6">
+                          <div className="flex items-center gap-4">
+                            <div className="relative">
+                              {/* Dynamic initials avatar replaces the hardcoded images */}
+                              <div className="h-12 w-12 rounded-full flex items-center justify-center font-['Noto_Serif'] text-lg font-bold bg-[#974400]/10 text-[#974400] ring-2 ring-[#fcc340]/20 transition-all duration-300">
+                                {initials}
+                              </div>
+                              {/* Online indicator dot (Optional: default to gray/neutral) */}
+                              <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-stone-300 ring-2 ring-white"></span>
+                            </div>
+                            <div>
+                              <p className="font-['Noto_Serif'] text-lg leading-[1.4] font-semibold text-[#1f1b12]">
+                                {name}
+                              </p>
+                              <p className="text-sm text-stone-500 font-['Plus_Jakarta_Sans']">
+                                {email}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 lg:px-8 py-6 font-['Plus_Jakarta_Sans'] text-base leading-normal text-[#564338]">
+                          {joinedDate}
+                        </td>
+                        <td className="px-6 lg:px-8 py-6">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-stone-400 font-['Plus_Jakarta_Sans'] select-all">
+                              {user.id.substring(0, 8)}...
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-6 lg:px-8 py-6 font-['Noto_Serif'] text-base font-semibold text-[#564338]">
+                          —
+                        </td>
+                        <td className="px-6 lg:px-8 py-6">
+                          {/* Dynamic badge mapping for roles instead of membership levels */}
+                          <span
+                            className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border font-['Plus_Jakarta_Sans'] ${
+                              role === 'admin'
+                                ? 'bg-[#974400]/10 text-[#bb5808] border-[#974400]/20'
+                                : 'bg-[#ebe1d3] text-[#564338] border-stone-200'
+                            }`}
+                          >
+                            {role}
+                          </span>
+                        </td>
+                        <td className="px-6 lg:px-8 py-6 text-right">
+                          <button className="text-stone-400 hover:text-[#974400] transition-colors p-2 rounded-full hover:bg-orange-50">
+                            <span
+                              className="material-symbols-outlined"
+                              data-icon="more_vert"
+                            >
+                              more_vert
+                            </span>
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
             {/* Pagination */}
             <div className="px-6 lg:px-8 py-6 bg-[#f6edde] border-t border-orange-100 flex flex-col sm:flex-row items-center justify-between gap-4">
               <p className="text-sm font-['Plus_Jakarta_Sans'] text-stone-500">
-                Showing <span className="font-bold text-[#1f1b12]">1-4</span> of{' '}
-                <span className="font-bold text-[#1f1b12]">1,284</span>{' '}
+                Showing{' '}
+                <span className="font-bold text-[#1f1b12]">{users.length}</span>{' '}
                 customers
               </p>
               <div className="flex gap-2">
@@ -415,11 +279,11 @@ export default function Customers() {
                 <h4 className="font-['Noto_Serif'] text-[32px] leading-[1.3] font-semibold mb-4 italic">
                   Customer Insights
                 </h4>
-                <p className="font-['Plus_Jakarta_Sans'] text-base leading-[1.5] opacity-90 max-w-md mb-6">
+                <p className="font-['Plus_Jakarta_Sans'] text-base leading-normal opacity-90 max-w-md mb-6">
                   Recent data suggests a 15% increase in repeat purchases from
                   your 'Platinum' tier customers in the bakery sector.
                 </p>
-                <button className="px-6 py-3 bg-white text-[#974400] text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] rounded-xl hover:bg-orange-50 active:scale-[0.98] transition-all">
+                <button className="px-6 py-3 bg-white text-[#974400] text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] rounded-xl hover:bg-orange-50 active:scale-[0.98] transition-all">
                   View Full Report
                 </button>
               </div>
@@ -445,7 +309,7 @@ export default function Customers() {
                   >
                     mail
                   </span>
-                  <span className="text-xs uppercase text-stone-600 font-bold font-['Plus_Jakarta_Sans'] tracking-[0.05em]">
+                  <span className="text-xs uppercase text-stone-600 font-bold font-['Plus_Jakarta_Sans'] tracking-wider">
                     Blast Email
                   </span>
                 </button>
@@ -456,7 +320,7 @@ export default function Customers() {
                   >
                     loyalty
                   </span>
-                  <span className="text-xs uppercase text-stone-600 font-bold font-['Plus_Jakarta_Sans'] tracking-[0.05em]">
+                  <span className="text-xs uppercase text-stone-600 font-bold font-['Plus_Jakarta_Sans'] tracking-wider">
                     Assign Tier
                   </span>
                 </button>
@@ -467,7 +331,7 @@ export default function Customers() {
                   >
                     block
                   </span>
-                  <span className="text-xs uppercase text-stone-600 font-bold font-['Plus_Jakarta_Sans'] tracking-[0.05em]">
+                  <span className="text-xs uppercase text-stone-600 font-bold font-['Plus_Jakarta_Sans'] tracking-wider">
                     Manage Bans
                   </span>
                 </button>
@@ -478,7 +342,7 @@ export default function Customers() {
                   >
                     auto_awesome
                   </span>
-                  <span className="text-xs uppercase text-stone-600 font-bold font-['Plus_Jakarta_Sans'] tracking-[0.05em]">
+                  <span className="text-xs uppercase text-stone-600 font-bold font-['Plus_Jakarta_Sans'] tracking-wider">
                     AI Outreach
                   </span>
                 </button>

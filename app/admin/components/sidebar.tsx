@@ -2,8 +2,11 @@
 
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
+import useUser from '@/hooks/useUser';
+
 
 export default function Sidebar() {
+  const {loading, currentUser} = useUser();
   const pathname = usePathname();
 
   const navItems = [
@@ -107,10 +110,10 @@ export default function Sidebar() {
           />
           <div className="min-w-0">
             <p className="text-xs font-bold text-[#1f1b12] truncate">
-              Alex Thompson
+              {currentUser?.name}
             </p>
             <p className="text-[10px] text-[#564338] font-medium">
-              Store Manager
+              Admin
             </p>
           </div>
         </div>

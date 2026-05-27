@@ -137,7 +137,6 @@ export default function Login() {
                 </div>
                 {state?.errors?.password && <p>{state.errors.password}</p>}
               </div>
-              {/* <!-- Remember Me --> */}
 
               {/* <!-- CTA Buttons --> */}
               <div className="pt-4 space-y-4">

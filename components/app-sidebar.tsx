@@ -34,8 +34,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-import {useEffect, useState} from 'react';
-import {redirect} from 'next/navigation';
+import useUser from '@/hooks/useUser';
+import {logout} from '@/app/lib/session';
 
 const categories = [
   {
@@ -84,23 +84,7 @@ type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
 export function AppSidebar({active, setActive, ...props}: AppSidebarProps) {
   const {setOpenMobile, isMobile} = useSidebar();
 
-  const [currentUser, setCurrentUser] = useState<{
-    name?: string;
-    email?: string;
-  }>({});
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem('currentUser');
-
-    if (storedUser) {
-      setCurrentUser(JSON.parse(storedUser));
-    }
-  }, []);
-
-  const handleLogout = async () => {
-
-    redirect('/login');
-  };
+  const {loading, currentUser} = useUser();
 
   return (
     <Sidebar
@@ -191,7 +175,7 @@ export function AppSidebar({active, setActive, ...props}: AppSidebarProps) {
       </SidebarContent>
       <SidebarFooter className="border-t border-[#974400]/10 p-4">
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+          <DropdownMenuTrigger asChild disabled={loading}>
             <button
               className="
           w-full
@@ -233,7 +217,7 @@ export function AppSidebar({active, setActive, ...props}: AppSidebarProps) {
       "
           >
             <DropdownMenuItem
-              onClick={handleLogout}
+              onClick={logout}
               className="
           cursor-pointer
           text-red-500

@@ -1,6 +1,12 @@
 'use client';
 
-import {CircleUser, LogIn, LogOut, User2, UserPlus, ChevronDown} from 'lucide-react';
+import {
+  LogIn,
+  LogOut,
+  User2,
+  UserPlus,
+  ChevronDown,
+} from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,24 +18,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
-import {useState, useEffect} from 'react';
+import useUser from '@/hooks/useUser';
+import {logout} from '../lib/session';
 
 export default function Header() {
   const pathName = usePathname();
   const isHomepage = pathName === '/';
-  const [currentUser, setCurrentUser] = useState<{name?: string; email?: string}>({});
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
-      setCurrentUser(user);
-    }
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem('currentUser');
-    window.location.href = '/login';
-  };
+  const {loading, currentUser} = useUser();
 
   return (
     <header className="bg-[#FFFDF5]/90 max-w-full backdrop-blur-md border-b border-[#D2691E]/10 shadow-sm sticky top-0 z-50">
@@ -42,15 +37,15 @@ export default function Header() {
             New English
           </a>
         </div>
-        
+
         {isHomepage ? (
           <div className="flex items-center gap-4">
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+              {/* <DropdownMenuTrigger asChild>
                 <button className="flex items-center justify-center w-10 h-10 cursor-pointer rounded-full border-2 border-orange-600 text-orange-600 hover:bg-orange-50 transition active:scale-95">
                   <CircleUser className="w-5 h-5" />
                 </button>
-              </DropdownMenuTrigger>
+              </DropdownMenuTrigger> */}
 
               <DropdownMenuContent className="w-56 mr-6 rounded-xl border-[#D2691E]/10">
                 <DropdownMenuLabel className="text-sm font-semibold font-['Plus_Jakarta_Sans']">
@@ -93,25 +88,40 @@ export default function Header() {
         ) : (
           <div>
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-2 sm:gap-3 px-2 py-1 cursor-pointer rounded-xl hover:bg-[#974400]/5 transition-colors">
+              <DropdownMenuTrigger asChild disabled={loading}>
+                <button className="flex items-center gap-2 sm:gap-3 px-2 py-1 cursor-pointer rounded-xl hover:bg-[#974400]/5 transition-colors disabled:opacity-70 disabled:cursor-not-allowed">
                   {/* Avatar - Always visible */}
                   <div className="flex size-9 sm:size-8 items-center justify-center rounded-full bg-[#974400]/10 text-[#974400] p-4 shrink-0">
-                    {currentUser?.name?.charAt(0) || (
+                    {loading ? (
+                      // Simple loading spinner for the avatar
+                      <div className="size-4 animate-spin rounded-full border-2 border-[#974400] border-t-transparent" />
+                    ) : currentUser?.name?.charAt(0) ? (
+                      currentUser.name.charAt(0)
+                    ) : (
                       <User2 className="size-4 sm:size-5" />
                     )}
                   </div>
 
                   {/* Name & Email - Hidden on mobile, visible on sm+ */}
-                  <div className="hidden sm:flex flex-col text-left">
-                    <span className="text-sm font-semibold text-[#3b2a1f] font-['Plus_Jakarta_Sans']">
-                      {currentUser?.name || 'Guest User'}
-                    </span>
-                    <span className="text-xs text-[#7c6656] font-['Plus_Jakarta_Sans']">
-                      {currentUser?.email || 'guest@email.com'}
-                    </span>
+                  <div className="hidden sm:flex flex-col text-left min-w-[100px]">
+                    {loading ? (
+                      // Skeleton loader fields while loading
+                      <div className="space-y-1.5 animate-pulse">
+                        <div className="h-3 w-20 bg-[#3b2a1f]/10 rounded" />
+                        <div className="h-2.5 w-28 bg-[#7c6656]/10 rounded" />
+                      </div>
+                    ) : (
+                      <>
+                        <span className="text-sm font-semibold text-[#3b2a1f] font-['Plus_Jakarta_Sans']">
+                          {currentUser?.name || 'Guest User'}
+                        </span>
+                        <span className="text-xs text-[#7c6656] font-['Plus_Jakarta_Sans']">
+                          {currentUser?.email || 'guest@email.com'}
+                        </span>
+                      </>
+                    )}
                   </div>
-                  
+
                   {/* Chevron - Visible on desktop only */}
                   <ChevronDown className="hidden sm:block size-4 text-[#7c6656]" />
                 </button>
@@ -126,17 +136,30 @@ export default function Header() {
                 <div className="sm:hidden px-4 py-3 border-b border-[#D2691E]/10">
                   <div className="flex items-center gap-3">
                     <div className="flex size-10 items-center justify-center rounded-full bg-[#974400]/10 text-[#974400]">
-                      {currentUser?.name?.charAt(0) || (
+                      {loading ? (
+                        <div className="size-4 animate-spin rounded-full border-2 border-[#974400] border-t-transparent" />
+                      ) : currentUser?.name?.charAt(0) ? (
+                        currentUser.name.charAt(0)
+                      ) : (
                         <User2 className="size-5" />
                       )}
                     </div>
-                    <div className="flex flex-col">
-                      <span className="text-sm font-semibold text-[#3b2a1f] font-['Plus_Jakarta_Sans']">
-                        {currentUser?.name || 'Guest User'}
-                      </span>
-                      <span className="text-xs text-[#7c6656] font-['Plus_Jakarta_Sans']">
-                        {currentUser?.email || 'guest@email.com'}
-                      </span>
+                    <div className="flex flex-col min-w-[120px]">
+                      {loading ? (
+                        <div className="space-y-1.5 animate-pulse">
+                          <div className="h-3 w-20 bg-[#3b2a1f]/10 rounded" />
+                          <div className="h-2.5 w-28 bg-[#7c6656]/10 rounded" />
+                        </div>
+                      ) : (
+                        <>
+                          <span className="text-sm font-semibold text-[#3b2a1f] font-['Plus_Jakarta_Sans']">
+                            {currentUser?.name || 'Guest User'}
+                          </span>
+                          <span className="text-xs text-[#7c6656] font-['Plus_Jakarta_Sans']">
+                            {currentUser?.email || 'guest@email.com'}
+                          </span>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -145,11 +168,11 @@ export default function Header() {
                 <DropdownMenuLabel className="hidden sm:block text-sm font-semibold font-['Plus_Jakarta_Sans']">
                   Account
                 </DropdownMenuLabel>
-                
+
                 <DropdownMenuSeparator className="hidden sm:block" />
 
                 <DropdownMenuItem
-                  onClick={handleLogout}
+                  onClick={logout}
                   className="cursor-pointer text-red-500 focus:bg-red-50 focus:text-red-600 py-2.5 font-['Plus_Jakarta_Sans'] text-sm"
                 >
                   <LogOut className="mr-2 size-4" />
