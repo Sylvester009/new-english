@@ -1,10 +1,6 @@
 'use server';
 
-import bcrypt from 'bcrypt';
-import { promises as fs } from 'fs';
-import path from 'path';
 import { LoginFormSchema, SignupFormSchema, FormState } from '@/app/lib/definitions';
-import { createSession } from '../lib/session';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 
