@@ -2,11 +2,11 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export type CartItem = {
-    image_url: string | StaticImport;
+    image_url: string;
     id: string;
     name: string;
     price: number;
-    image: string;
+    image?: string;
     description: string;
     quantity: number;
 };

@@ -1,10 +1,9 @@
 // types/product.ts
 export interface Product {
-  image_url: string | StaticImport;
+  image_url: string;
   id: string;
   name: string;
   price: number;
-  image: string;
   description: string;
   category: string;
   tag?: string;

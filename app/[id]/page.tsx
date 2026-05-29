@@ -1,5 +1,4 @@
 // app/[id]/page.tsx
-import {ProductAPI} from '@/lib/api';
 import ProductDetails from '@/app/components/productDetails';
 import {notFound} from 'next/navigation';
 import {getProductByCategory, getProductById} from '../actions/product';

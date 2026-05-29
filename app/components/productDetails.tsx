@@ -219,7 +219,7 @@ export default function ProductDetails({
                   <div className="aspect-square rounded-lg overflow-hidden mb-4 bg-[#f6edde]">
                     <img
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      src={item.image}
+                      src={item.image_url}
                       alt={item.name}
                     />
                   </div>
