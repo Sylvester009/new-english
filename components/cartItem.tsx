@@ -15,7 +15,7 @@ export default function CartItem() {
         <div key={item.id} className="flex gap-4 group pb-4">
           <div className="w-24 h-24 shrink-0 bg-[#fcf2e3] rounded-lg overflow-hidden border border-[#e2d9ca]">
             <Image
-              src={item.image}
+              src={item.image_url}
               alt={item.name}
               width={96}
               height={96}

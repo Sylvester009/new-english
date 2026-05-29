@@ -35,7 +35,7 @@ export default function Review() {
             Delivery Details
           </h2>
           <button
-            className="text-[#974400] text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] hover:underline transition-all"
+            className="text-[#974400] text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] hover:underline transition-all"
             onClick={prevStep}
           >
             Edit
@@ -44,11 +44,11 @@ export default function Review() {
         <div className="grid md:grid-cols-2 gap-6 md:gap-8">
           {deliveryMethod === 'delivery' ? (
             <div>
-              <p className="text-[#564338] text-xs uppercase tracking-[0.1em] font-bold mb-2">
+              <p className="text-[#564338] text-xs uppercase tracking-widest font-bold mb-2">
                 Shipping Address
               </p>
 
-              <p className="font-['Plus_Jakarta_Sans'] text-base leading-[1.5] text-[#1f1b12]">
+              <p className="font-['Plus_Jakarta_Sans'] text-base leading-normal text-[#1f1b12]">
                 {deliveryInfo.firstName} {deliveryInfo.lastName}
                 <br />
                 {deliveryInfo.address}
@@ -58,11 +58,11 @@ export default function Review() {
             </div>
           ) : (
             <div>
-              <p className="text-[#564338] text-xs uppercase tracking-[0.1em] font-bold mb-2">
+              <p className="text-[#564338] text-xs uppercase tracking-widest font-bold mb-2">
                 Pickup Location
               </p>
 
-              <p className="font-['Plus_Jakarta_Sans'] text-base leading-[1.5] text-[#1f1b12]">
+              <p className="font-['Plus_Jakarta_Sans'] text-base leading-normal text-[#1f1b12]">
                 Store Pickup Selected
                 <br />
                 Ready for collection at nearest branch
@@ -70,7 +70,7 @@ export default function Review() {
             </div>
           )}
           <div>
-            <p className="font-['Plus_Jakarta_Sans'] text-base leading-[1.5] text-[#1f1b12] flex flex-col">
+            <p className="font-['Plus_Jakarta_Sans'] text-base leading-normal text-[#1f1b12] flex flex-col">
               <span className="font-bold">
                 {deliveryMethod === 'delivery'
                   ? 'Home Delivery'
@@ -109,7 +109,7 @@ export default function Review() {
                 <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden shrink-0 bg-[#ebe1d3]">
                   <img
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    src={item.image}
+                    src={item.image_url}
                     alt={item.name}
                   />
                 </div>
@@ -148,7 +148,7 @@ export default function Review() {
         <button
           onClick={nextStep}
           disabled={!isValid}
-          className="flex-1 px-8 py-4 bg-[#bb5808] text-[#fffbff] text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] rounded-xl shadow-lg hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+          className="flex-1 px-8 py-4 bg-[#bb5808] text-[#fffbff] text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] rounded-xl shadow-lg hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
         >
           CONTINUE TO PAYMENT
           <span
@@ -160,7 +160,7 @@ export default function Review() {
         </button>
         <button
           onClick={prevStep}
-          className="px-8 py-4 border-2 border-[#974400] text-[#974400] text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] rounded-xl hover:bg-[#974400]/5 active:scale-[0.98] transition-all"
+          className="px-8 py-4 border-2 border-[#974400] text-[#974400] text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] rounded-xl hover:bg-[#974400]/5 active:scale-[0.98] transition-all"
         >
           BACK TO DELIVERY
         </button>

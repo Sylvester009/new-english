@@ -37,7 +37,7 @@ import {
 import useUser from '@/hooks/useUser';
 import {logout} from '@/app/lib/session';
 
-const categories = [
+export const categories = [
   {
     title: 'Groceries',
     icon: <ShoppingCart />,

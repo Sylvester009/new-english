@@ -15,7 +15,7 @@ export default function Info() {
         <h1 className="font-['Noto_Serif'] text-[48px] leading-[1.2] tracking-[-0.02em] font-bold text-[#974400]">
           Your Basket
         </h1>
-        <p className="text-[#795900] font-['Plus_Jakarta_Sans'] text-base leading-[1.5] mt-2">
+        <p className="text-[#795900] font-['Plus_Jakarta_Sans'] text-base leading-normal mt-2">
           Carefully selected items ready for your table.
         </p>
       </header>
@@ -37,7 +37,7 @@ export default function Info() {
                   <img
                     alt={item.name}
                     className="w-full h-full object-cover"
-                    src={item.image}
+                    src={item.image_url}
                   />
                 </div>
 
@@ -47,7 +47,7 @@ export default function Info() {
                     {item.name}
                   </h3>
 
-                  <p className="text-[#8a7266] font-['Plus_Jakarta_Sans'] text-base leading-[1.5]">
+                  <p className="text-[#8a7266] font-['Plus_Jakarta_Sans'] text-base leading-normal">
                     {item.description}
                   </p>
                 </div>
@@ -123,7 +123,7 @@ export default function Info() {
           onClick={() => {
             router.push('/store');
           }}
-          className="px-8 py-4 border-2 border-[#974400] text-[#974400] text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] rounded-xl hover:bg-[#974400]/5 active:scale-[0.98] transition-all"
+          className="px-8 py-4 border-2 border-[#974400] text-[#974400] text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] rounded-xl hover:bg-[#974400]/5 active:scale-[0.98] transition-all"
         >
           BACK TO SHOPPING
         </button>

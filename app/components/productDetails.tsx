@@ -71,7 +71,7 @@ export default function ProductDetails({
           <div className="lg:col-span-7">
             <div className="relative aspect-4/5 rounded-2xl overflow-hidden shadow-sm border border-[#ebe1d3]/50 bg-[#fcf2e3]">
               <Image
-                src={product.image}
+                src={product.image_url}
                 alt={product.name}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

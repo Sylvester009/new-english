@@ -1,70 +1,59 @@
-import { Product } from '@/types/product';
-import { ProductAPI } from '@/lib/api';
-import { useEffect, useState, useCallback, useRef } from 'react';
+"use client"
 
-interface UseProductsOptions {
-    category?: string;
-    search?: string;
-    initialData?: Product[];
+import { useState, useEffect } from 'react'
+import { createClient } from '@/lib/supabase/client'
+
+interface UseProductsProps {
+  category: string
+  search: string
+  initialData?: any[]
 }
 
-export function useProducts({ category, search, initialData }: UseProductsOptions = {}) {
-    const [products, setProducts] = useState<Product[]>(initialData || []);
-    const [isLoading, setIsLoading] = useState(!initialData);
-    const [error, setError] = useState<string | null>(null);
-    const previousCategoryRef = useRef<string | undefined>(category);
+export function useProducts({ category, search }: UseProductsProps) {
+  const [products, setProducts] = useState<any[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-    const fetchProducts = useCallback(async () => {
-        try {
-            setIsLoading(true);
-            setError(null);
+  useEffect(() => {
+    const supabase = createClient()
 
-            let data: Product[];
-            if (category) {
-                data = await ProductAPI.getProductsByCategory(category);
-            } else {
-                data = await ProductAPI.getAllProducts();
-            }
+    async function fetchProducts() {
+      setIsLoading(true)
+      setError(null)
 
-            setProducts(data);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Failed to fetch products');
-            // Fallback to initialData if available
-            if (initialData) {
-                setProducts(initialData);
-            }
-        } finally {
-            setIsLoading(false);
+      try {
+        // 1. Initialize your Supabase base query pointing to products
+        let query = supabase.from('products').select('*')
+
+        // 2. Apply category filters dynamically if specified
+        if (category && category !== 'all') {
+          query = query.eq('category', category)
         }
-    }, [category, initialData]);
 
-    useEffect(() => {
-        if (previousCategoryRef.current !== category) {
-            previousCategoryRef.current = category;
-            fetchProducts();
+        // 3. Apply search filters across titles if specified
+        if (search) {
+          query = query.ilike('name', `%${search}%`)
         }
-    }, [category, fetchProducts]);
 
-    useEffect(() => {
-        if (!initialData) {
-            fetchProducts();
+        // 4. Sort items cleanly by arrival date
+        query = query.order('created_at', { ascending: false })
+
+        const { data, error: supabaseError } = await query
+
+        if (supabaseError) {
+          throw new Error(supabaseError.message)
         }
-    }, [fetchProducts, initialData]);
 
-    // Filter products based on search
-    const filteredProducts = useCallback(() => {
-        if (search && search.trim() !== '') {
-            return products.filter(product =>
-                product.name.toLowerCase().includes(search.toLowerCase())
-            );
-        }
-        return products;
-    }, [products, search]);
+        setProducts(data || [])
+      } catch (err: any) {
+        setError(err.message || 'An error occurred while fetching products.')
+      } finally {
+        setIsLoading(false)
+      }
+    }
 
-    return {
-        products: filteredProducts(),
-        isLoading,
-        error,
-        refetch: fetchProducts
-    };
+    fetchProducts()
+  }, [category, search]) // Triggers automatic re-fetching when inputs change
+
+  return { products, isLoading, error }
 }

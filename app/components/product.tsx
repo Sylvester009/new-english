@@ -12,11 +12,12 @@ type ProductListProps = {
   search: string;
 };
 
+export const revalidate = 60;
+
 export default function ProductList({productType, search}: ProductListProps) {
   const {products, isLoading, error} = useProducts({
     category: productType,
     search,
-    initialData: localProducts.filter(p => p.category === productType),
   });
 
   const addToCart = useCartStore(state => state.addToCart);
@@ -74,7 +75,7 @@ export default function ProductList({productType, search}: ProductListProps) {
             <div className="relative overflow-hidden rounded-2xl mb-4 aspect-4/3 bg-[#fcf2e3] border border-stone-100">
               <Image
                 alt={product.name}
-                src={product.image}
+                src={product.image_url}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-cover transition-transform duration-500 group-hover:scale-105"

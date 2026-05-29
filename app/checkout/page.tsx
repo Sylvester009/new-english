@@ -142,7 +142,7 @@ export default function Checkout() {
                     <img
                       alt={item.name}
                       className="w-full h-full object-cover"
-                      src={item.image}
+                      src={item.image_url}
                     />
                   </div>
 

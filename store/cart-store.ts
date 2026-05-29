@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export type CartItem = {
+    image_url: string | StaticImport;
     id: string;
     name: string;
     price: number;
