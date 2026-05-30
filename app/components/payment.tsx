@@ -1,8 +1,20 @@
 import {useCartStore} from '@/store/cart-store';
 import {useCheckoutStore} from '@/store/checkout-store';
 
-export default function Payment() {
+interface PaymentProps {
+  handlepayment: () => void;
+  isSubmitting: boolean;
+}
+
+export default function Payment({handlepayment, isSubmitting}: PaymentProps) {
   const subtotal = useCartStore(state => state.subtotal);
+
+  const subTotal = subtotal();
+  const deliveryFee = subTotal > 0 ? 8.95 : 0;
+
+  const tax = subTotal * 0.075;
+
+  const total = subTotal + deliveryFee + tax;
 
   const prevStep = useCheckoutStore(state => state.prevStep);
 
@@ -43,7 +55,7 @@ export default function Payment() {
             <span className="material-symbols-outlined text-[#974400] text-3xl">
               credit_card
             </span>
-            <span className="text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-[#1f1b12]">
+            <span className="text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] text-[#1f1b12]">
               Card
             </span>
           </label>
@@ -62,7 +74,7 @@ export default function Payment() {
             <span className="material-symbols-outlined text-[#564338] text-3xl">
               account_balance_wallet
             </span>
-            <span className="text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-[#564338]">
+            <span className="text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] text-[#564338]">
               Apple Pay
             </span>
           </label>
@@ -72,11 +84,11 @@ export default function Payment() {
         <div className="space-y-5">
           {/* Cardholder Name */}
           <div className="flex flex-col gap-2">
-            <label className="text-xs tracking-[0.1em] font-bold font-['Plus_Jakarta_Sans'] text-[#564338] uppercase ml-1">
+            <label className="text-xs tracking-widest font-bold font-['Plus_Jakarta_Sans'] text-[#564338] uppercase ml-1">
               Cardholder Name
             </label>
             <input
-              className="w-full bg-[#fcf2e3] border-2 border-[#ddc1b3] rounded-xl px-4 py-3.5 font-['Plus_Jakarta_Sans'] text-base leading-[1.5] focus:outline-none focus:border-[#fcc340] focus:ring-4 focus:ring-[#fcc340]/10 transition-all placeholder:text-[#8a7266]/50"
+              className="w-full bg-[#fcf2e3] border-2 border-[#ddc1b3] rounded-xl px-4 py-3.5 font-['Plus_Jakarta_Sans'] text-base leading-normal focus:outline-none focus:border-[#fcc340] focus:ring-4 focus:ring-[#fcc340]/10 transition-all placeholder:text-[#8a7266]/50"
               placeholder="John D. Artisan"
               type="text"
               value={paymentInfo.cardholderName}
@@ -90,12 +102,12 @@ export default function Payment() {
 
           {/* Card Number */}
           <div className="flex flex-col gap-2">
-            <label className="text-xs tracking-[0.1em] font-bold font-['Plus_Jakarta_Sans'] text-[#564338] uppercase ml-1">
+            <label className="text-xs tracking-widest font-bold font-['Plus_Jakarta_Sans'] text-[#564338] uppercase ml-1">
               Card Number
             </label>
             <div className="relative">
               <input
-                className="w-full bg-[#fcf2e3] border-2 border-[#ddc1b3] rounded-xl px-4 py-3.5 pr-12 font-['Plus_Jakarta_Sans'] text-base leading-[1.5] focus:outline-none focus:border-[#fcc340] focus:ring-4 focus:ring-[#fcc340]/10 transition-all placeholder:text-[#8a7266]/50"
+                className="w-full bg-[#fcf2e3] border-2 border-[#ddc1b3] rounded-xl px-4 py-3.5 pr-12 font-['Plus_Jakarta_Sans'] text-base leading-normal focus:outline-none focus:border-[#fcc340] focus:ring-4 focus:ring-[#fcc340]/10 transition-all placeholder:text-[#8a7266]/50"
                 placeholder="•••• •••• •••• ••••"
                 type="text"
                 value={paymentInfo.cardNumber}
@@ -116,11 +128,11 @@ export default function Payment() {
           {/* Expiry Date & CVV */}
           <div className="grid grid-cols-2 gap-5">
             <div className="flex flex-col gap-2">
-              <label className="text-xs tracking-[0.1em] font-bold font-['Plus_Jakarta_Sans'] text-[#564338] uppercase ml-1">
+              <label className="text-xs tracking-widest font-bold font-['Plus_Jakarta_Sans'] text-[#564338] uppercase ml-1">
                 Expiry Date
               </label>
               <input
-                className="w-full bg-[#fcf2e3] border-2 border-[#ddc1b3] rounded-xl px-4 py-3.5 font-['Plus_Jakarta_Sans'] text-base leading-[1.5] focus:outline-none focus:border-[#fcc340] focus:ring-4 focus:ring-[#fcc340]/10 transition-all placeholder:text-[#8a7266]/50"
+                className="w-full bg-[#fcf2e3] border-2 border-[#ddc1b3] rounded-xl px-4 py-3.5 font-['Plus_Jakarta_Sans'] text-base leading-normal focus:outline-none focus:border-[#fcc340] focus:ring-4 focus:ring-[#fcc340]/10 transition-all placeholder:text-[#8a7266]/50"
                 placeholder="MM / YY"
                 type="text"
                 value={paymentInfo.expiry}
@@ -132,11 +144,11 @@ export default function Payment() {
               />
             </div>
             <div className="flex flex-col gap-2">
-              <label className="text-xs tracking-[0.1em] font-bold font-['Plus_Jakarta_Sans'] text-[#564338] uppercase ml-1">
+              <label className="text-xs tracking-widest font-bold font-['Plus_Jakarta_Sans'] text-[#564338] uppercase ml-1">
                 CVV
               </label>
               <input
-                className="w-full bg-[#fcf2e3] border-2 border-[#ddc1b3] rounded-xl px-4 py-3.5 font-['Plus_Jakarta_Sans'] text-base leading-[1.5] focus:outline-none focus:border-[#fcc340] focus:ring-4 focus:ring-[#fcc340]/10 transition-all placeholder:text-[#8a7266]/50"
+                className="w-full bg-[#fcf2e3] border-2 border-[#ddc1b3] rounded-xl px-4 py-3.5 font-['Plus_Jakarta_Sans'] text-base leading-normal focus:outline-none focus:border-[#fcc340] focus:ring-4 focus:ring-[#fcc340]/10 transition-all placeholder:text-[#8a7266]/50"
                 placeholder="•••"
                 type="text"
                 value={paymentInfo.cvv}
@@ -173,7 +185,7 @@ export default function Payment() {
                 check
               </span>
             </div>
-            <span className="font-['Plus_Jakarta_Sans'] text-base leading-[1.5] text-[#1f1b12] group-hover:text-[#974400] transition-colors">
+            <span className="font-['Plus_Jakarta_Sans'] text-base leading-normal text-[#1f1b12] group-hover:text-[#974400] transition-colors">
               Same as delivery address
             </span>
           </label>
@@ -186,15 +198,16 @@ export default function Payment() {
       {/* Navigation Buttons */}
       <div className="flex flex-col md:flex-row gap-4 pt-8">
         <button
-          disabled={!isValid}
-          className="flex-1 px-8 py-4 bg-[#bb5808] text-[#fffbff] text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] rounded-xl shadow-lg hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+          type="button"
+          disabled={!isSubmitting}
+          onClick={handlepayment}
+          className=" w-full cursor-pointer px-6 py-3 bg-[#974400] text-white rounded-xl text-sm font-bold tracking-wider uppercase hover:bg-[#7a3700] transition disabled:opacity-40 disabled:cursor-not-allowed shadow-md"
         >
-          <span className="material-symbols-outlined text-sm">lock</span>
-          PAY # {subtotal()}
+          Pay ${total}
         </button>
         <button
           onClick={prevStep}
-          className="px-8 py-4 border-2 border-[#974400] text-[#974400] text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] rounded-xl hover:bg-[#974400]/5 active:scale-[0.98] transition-all"
+          className="w-1/3 px-8 py-4 border-2 border-[#974400] text-[#974400] text-sm leading-[1.2] tracking-wider font-bold font-['Plus_Jakarta_Sans'] rounded-xl hover:bg-[#974400]/5 active:scale-[0.98] transition-all"
         >
           BACK TO REVIEW
         </button>

@@ -1,13 +1,83 @@
 'use client';
 
+import {useEffect, useState} from 'react';
+import {createClient} from '@/lib/supabase/client';
 import Sidebar from '../components/sidebar';
 import TopAppBar from '../components/top-appbar';
 
+interface Order {
+  id: string;
+  created_at: string;
+  customer_name: string;
+  delivery_method: 'home' | 'pickup';
+  street_address: string | null;
+  city: string | null;
+  postcode: string | null;
+  phone_number: string;
+  total_amount: number;
+  payment_status: string;
+  payment_id: string;
+}
+
+type TabType = 'all' | 'pending' | 'paid' | 'shipped';
+
 export default function Orders() {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
+  const [activeTab, setActiveTab] = useState<TabType>('all');
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchOrders() {
+      try {
+        setIsLoading(true);
+        const {data, error} = await createClient()
+          .from('orders')
+          .select('*')
+          .order('created_at', {ascending: false});
+
+        if (error) throw error;
+        if (data) {
+          setOrders(data as Order[]);
+          setFilteredOrders(data as Order[]);
+        }
+      } catch (err: any) {
+        console.error('Error loading analytics from Supabase:', err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchOrders();
+  }, []);
+
+  // Filter list items down when clicking interactive tabs
+  useEffect(() => {
+    if (activeTab === 'all') {
+      setFilteredOrders(orders);
+    } else {
+      setFilteredOrders(
+        orders.filter(
+          order =>
+            order.payment_status.toLowerCase() === activeTab.toLowerCase(),
+        ),
+      );
+    }
+  }, [activeTab, orders]);
+
+  // Compute live metric totals for Bento stats cards
+  const totalOrdersCount = orders.length;
+  const pendingCount = orders.filter(
+    o => o.payment_status.toLowerCase() === 'pending',
+  ).length;
+  const totalRevenue = orders.reduce(
+    (sum, order) => sum + Number(order.total_amount),
+    0,
+  );
+
   return (
     <>
       <Sidebar />
-      <main className="ml-64 min-h-screen">
+      <main className="ml-64 min-h-screen bg-[#fffcf8]">
         {/* Top App Bar */}
         <TopAppBar />
 
@@ -51,266 +121,189 @@ export default function Orders() {
 
           {/* Filters & Bento Stats */}
           <div className="grid grid-cols-12 gap-4 lg:gap-6 mb-8 lg:mb-10">
-            <div className="col-span-12 md:col-span-3 bg-[#ffffff] p-5 lg:p-6 rounded-xl border border-orange-100 shadow-sm hover:shadow-md transition-shadow">
+            <div className="col-span-12 md:col-span-3 bg-[#ffffff] p-5 lg:p-6 rounded-xl border border-orange-100 shadow-sm">
               <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#8a7266] font-['Plus_Jakarta_Sans'] mb-1">
                 Total Orders
               </p>
               <h3 className="text-3xl font-bold text-[#974400] font-['Noto_Serif']">
-                1,284
+                {isLoading ? '...' : totalOrdersCount.toLocaleString()}
               </h3>
-              <div className="flex items-center gap-1 text-xs text-green-700 mt-2 font-bold font-['Plus_Jakarta_Sans']">
-                <span className="material-symbols-outlined text-sm">
-                  trending_up
-                </span>
-                +12.5% vs last week
+              <div className="text-xs text-stone-500 mt-2 font-['Plus_Jakarta_Sans']">
+                Live Synchronized Rows
               </div>
             </div>
-            <div className="col-span-12 md:col-span-3 bg-[#ffffff] p-5 lg:p-6 rounded-xl border border-orange-100 shadow-sm hover:shadow-md transition-shadow">
+            <div className="col-span-12 md:col-span-3 bg-[#ffffff] p-5 lg:p-6 rounded-xl border border-orange-100 shadow-sm">
               <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#8a7266] font-['Plus_Jakarta_Sans'] mb-1">
                 Pending Fulfillment
               </p>
               <h3 className="text-3xl font-bold text-[#795900] font-['Noto_Serif']">
-                42
+                {isLoading ? '...' : pendingCount}
               </h3>
               <p className="text-xs text-[#564338] mt-2 font-medium font-['Plus_Jakarta_Sans']">
-                8 urgent orders
+                Requires manual capture
               </p>
             </div>
-            <div className="col-span-12 md:col-span-6 bg-[#ffffff] p-5 lg:p-6 rounded-xl border border-orange-100 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between">
+            <div className="col-span-12 md:col-span-6 bg-[#ffffff] p-5 lg:p-6 rounded-xl border border-orange-100 shadow-sm flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#8a7266] font-['Plus_Jakarta_Sans'] mb-1">
-                  Revenue Forecast
+                  Gross Revenue
                 </p>
                 <h3 className="text-3xl font-bold text-[#1f1b12] font-['Noto_Serif']">
-                  $14,280.00
+                  {isLoading
+                    ? '...'
+                    : `$${totalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}
                 </h3>
                 <p className="text-xs text-[#564338] mt-2 font-medium font-['Plus_Jakarta_Sans']">
-                  Estimated payout for current cycle
+                  Calculated straight from settled payments
                 </p>
-              </div>
-              <div className="h-16 w-32 bg-orange-50 rounded-xl flex items-end justify-center gap-1 p-2">
-                <div className="w-3 bg-[#974400] rounded-t-sm h-[40%]"></div>
-                <div className="w-3 bg-[#974400] rounded-t-sm h-[60%]"></div>
-                <div className="w-3 bg-[#974400] rounded-t-sm h-[55%]"></div>
-                <div className="w-3 bg-[#974400] rounded-t-sm h-[80%]"></div>
-                <div className="w-3 bg-[#974400] rounded-t-sm h-[95%]"></div>
               </div>
             </div>
           </div>
 
-          {/* Order List Table */}
+          {/* Order List Table Section */}
           <section className="bg-[#ffffff] rounded-xl border border-orange-100 overflow-hidden shadow-sm">
             <div className="p-6 border-b border-orange-100 flex justify-between items-center">
               <div className="flex gap-4">
-                <button className="pb-2 border-b-2 border-[#974400] text-[#974400] font-bold text-sm px-2 font-['Plus_Jakarta_Sans']">
-                  All Orders
-                </button>
-                <button className="pb-2 border-b-2 border-transparent text-[#8a7266] font-medium text-sm px-2 hover:text-[#1f1b12] transition-colors font-['Plus_Jakarta_Sans']">
-                  Pending
-                </button>
-                <button className="pb-2 border-b-2 border-transparent text-[#8a7266] font-medium text-sm px-2 hover:text-[#1f1b12] transition-colors font-['Plus_Jakarta_Sans']">
-                  Paid
-                </button>
-                <button className="pb-2 border-b-2 border-transparent text-[#8a7266] font-medium text-sm px-2 hover:text-[#1f1b12] transition-colors font-['Plus_Jakarta_Sans']">
-                  Shipped
-                </button>
+                {(['all', 'pending', 'paid', 'shipped'] as TabType[]).map(
+                  tab => (
+                    <button
+                      key={tab}
+                      onClick={() => setActiveTab(tab)}
+                      className={`pb-2 border-b-2 text-sm px-2 font-['Plus_Jakarta_Sans'] uppercase tracking-wider font-bold transition-all ${
+                        activeTab === tab
+                          ? 'border-[#974400] text-[#974400]'
+                          : 'border-transparent text-[#8a7266] hover:text-[#1f1b12]'
+                      }`}
+                    >
+                      {tab} Orders
+                    </button>
+                  ),
+                )}
               </div>
             </div>
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-[#fcf2e3]">
-                  <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.1em] text-[#8a7266] font-['Plus_Jakarta_Sans']">
-                    Order ID
-                  </th>
-                  <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.1em] text-[#8a7266] font-['Plus_Jakarta_Sans']">
-                    Customer
-                  </th>
-                  <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.1em] text-[#8a7266] font-['Plus_Jakarta_Sans']">
-                    Date
-                  </th>
-                  <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.1em] text-[#8a7266] font-['Plus_Jakarta_Sans']">
-                    Total
-                  </th>
-                  <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.1em] text-[#8a7266] font-['Plus_Jakarta_Sans']">
-                    Status
-                  </th>
-                  <th className="px-6 py-4"></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-orange-50">
-                {/* Row 1 - Elena Moretti */}
-                <tr className="hover:bg-orange-50/30 transition-colors cursor-pointer group">
-                  <td className="px-6 py-5 text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-[#974400]">
-                    #ORD-82941
-                  </td>
-                  <td className="px-6 py-5">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[#ffd9e2] flex items-center justify-center text-[#3e001e] text-xs font-bold font-['Plus_Jakarta_Sans']">
-                        EM
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="font-bold text-sm text-[#1f1b12] font-['Plus_Jakarta_Sans']">
-                          Elena Moretti
-                        </span>
-                        <span className="text-xs text-[#8a7266] font-['Plus_Jakarta_Sans']">
-                          elena.m@example.it
-                        </span>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-5 text-sm font-medium text-[#1f1b12] font-['Plus_Jakarta_Sans']">
-                    Oct 24, 2023 · 09:12 AM
-                  </td>
-                  <td className="px-6 py-5 font-bold text-sm text-[#1f1b12] font-['Plus_Jakarta_Sans']">
-                    $124.50
-                  </td>
-                  <td className="px-6 py-5">
-                    <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.1em] bg-green-100 text-green-700 font-['Plus_Jakarta_Sans']">
-                      Paid
-                    </span>
-                  </td>
-                  <td className="px-6 py-5 text-right">
-                    <button className="p-2 rounded-full hover:bg-orange-100 text-[#8a7266] group-hover:text-[#974400] transition-all">
-                      <span className="material-symbols-outlined">
-                        chevron_right
-                      </span>
-                    </button>
-                  </td>
-                </tr>
-                {/* Row 2 - Julian Baker */}
-                <tr className="hover:bg-orange-50/30 transition-colors cursor-pointer group">
-                  <td className="px-6 py-5 text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-[#974400]">
-                    #ORD-82940
-                  </td>
-                  <td className="px-6 py-5">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[#ffdbc9] flex items-center justify-center text-[#321200] text-xs font-bold font-['Plus_Jakarta_Sans']">
-                        JB
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="font-bold text-sm text-[#1f1b12] font-['Plus_Jakarta_Sans']">
-                          Julian Baker
-                        </span>
-                        <span className="text-xs text-[#8a7266] font-['Plus_Jakarta_Sans']">
-                          jb@bakery.co.uk
-                        </span>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-5 text-sm font-medium text-[#1f1b12] font-['Plus_Jakarta_Sans']">
-                    Oct 23, 2023 · 04:45 PM
-                  </td>
-                  <td className="px-6 py-5 font-bold text-sm text-[#1f1b12] font-['Plus_Jakarta_Sans']">
-                    $42.00
-                  </td>
-                  <td className="px-6 py-5">
-                    <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.1em] bg-orange-100 text-orange-700 font-['Plus_Jakarta_Sans']">
-                      Pending
-                    </span>
-                  </td>
-                  <td className="px-6 py-5 text-right">
-                    <button className="p-2 rounded-full hover:bg-orange-100 text-[#8a7266] group-hover:text-[#974400] transition-all">
-                      <span className="material-symbols-outlined">
-                        chevron_right
-                      </span>
-                    </button>
-                  </td>
-                </tr>
-                {/* Row 3 - Sarah Chen */}
-                <tr className="hover:bg-orange-50/30 transition-colors cursor-pointer group">
-                  <td className="px-6 py-5 text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-[#974400]">
-                    #ORD-82939
-                  </td>
-                  <td className="px-6 py-5">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[#ffdea0] flex items-center justify-center text-[#261900] text-xs font-bold font-['Plus_Jakarta_Sans']">
-                        SC
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="font-bold text-sm text-[#1f1b12] font-['Plus_Jakarta_Sans']">
-                          Sarah Chen
-                        </span>
-                        <span className="text-xs text-[#8a7266] font-['Plus_Jakarta_Sans']">
-                          schen_art@gmail.com
-                        </span>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-5 text-sm font-medium text-[#1f1b12] font-['Plus_Jakarta_Sans']">
-                    Oct 23, 2023 · 02:20 PM
-                  </td>
-                  <td className="px-6 py-5 font-bold text-sm text-[#1f1b12] font-['Plus_Jakarta_Sans']">
-                    $315.20
-                  </td>
-                  <td className="px-6 py-5">
-                    <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.1em] bg-blue-100 text-blue-700 font-['Plus_Jakarta_Sans']">
-                      Shipped
-                    </span>
-                  </td>
-                  <td className="px-6 py-5 text-right">
-                    <button className="p-2 rounded-full hover:bg-orange-100 text-[#8a7266] group-hover:text-[#974400] transition-all">
-                      <span className="material-symbols-outlined">
-                        chevron_right
-                      </span>
-                    </button>
-                  </td>
-                </tr>
-                {/* Row 4 - Marcus Wright */}
-                <tr className="hover:bg-orange-50/30 transition-colors cursor-pointer group">
-                  <td className="px-6 py-5 text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-[#974400]">
-                    #ORD-82938
-                  </td>
-                  <td className="px-6 py-5">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[#ffdad6] flex items-center justify-center text-[#93000a] text-xs font-bold font-['Plus_Jakarta_Sans']">
-                        MW
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="font-bold text-sm text-[#1f1b12] font-['Plus_Jakarta_Sans']">
-                          Marcus Wright
-                        </span>
-                        <span className="text-xs text-[#8a7266] font-['Plus_Jakarta_Sans']">
-                          wright.design@outlook.com
-                        </span>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-5 text-sm font-medium text-[#1f1b12] font-['Plus_Jakarta_Sans']">
-                    Oct 23, 2023 · 11:05 AM
-                  </td>
-                  <td className="px-6 py-5 font-bold text-sm text-[#1f1b12] font-['Plus_Jakarta_Sans']">
-                    $89.90
-                  </td>
-                  <td className="px-6 py-5">
-                    <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.1em] bg-red-100 text-red-700 font-['Plus_Jakarta_Sans']">
-                      Cancelled
-                    </span>
-                  </td>
-                  <td className="px-6 py-5 text-right">
-                    <button className="p-2 rounded-full hover:bg-orange-100 text-[#8a7266] group-hover:text-[#974400] transition-all">
-                      <span className="material-symbols-outlined">
-                        chevron_right
-                      </span>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <div className="p-4 border-t border-orange-100 flex items-center justify-between">
-              <span className="text-xs text-[#8a7266] font-medium font-['Plus_Jakarta_Sans']">
-                Showing 1-4 of 1,284 results
-              </span>
-              <div className="flex gap-2">
-                <button
-                  className="px-4 py-1.5 rounded-lg border-2 border-orange-100 text-sm font-bold text-[#1f1b12] hover:bg-orange-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed font-['Plus_Jakarta_Sans']"
-                  disabled
-                >
-                  Previous
-                </button>
-                <button className="px-4 py-1.5 rounded-lg border-2 border-orange-100 text-sm font-bold text-[#1f1b12] hover:bg-orange-50 transition-colors font-['Plus_Jakarta_Sans']">
-                  Next
-                </button>
-              </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-[#fcf2e3]">
+                    <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.1em] text-[#8a7266] font-['Plus_Jakarta_Sans']">
+                      Order ID / Reference
+                    </th>
+                    <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.1em] text-[#8a7266] font-['Plus_Jakarta_Sans']">
+                      Customer
+                    </th>
+                    <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.1em] text-[#8a7266] font-['Plus_Jakarta_Sans']">
+                      Delivery Details
+                    </th>
+                    <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.1em] text-[#8a7266] font-['Plus_Jakarta_Sans']">
+                      Date
+                    </th>
+                    <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.1em] text-[#8a7266] font-['Plus_Jakarta_Sans']">
+                      Total
+                    </th>
+                    <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.1em] text-[#8a7266] font-['Plus_Jakarta_Sans']">
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-orange-50">
+                  {isLoading ? (
+                    <tr>
+                      <td
+                        colSpan={6}
+                        className="px-6 py-10 text-center text-sm font-medium text-[#8a7266] font-['Plus_Jakarta_Sans'] animate-pulse"
+                      >
+                        Loading database transactions...
+                      </td>
+                    </tr>
+                  ) : filteredOrders.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={6}
+                        className="px-6 py-10 text-center text-sm font-medium text-[#8a7266] font-['Plus_Jakarta_Sans']"
+                      >
+                        No transactions found for status "{activeTab}".
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredOrders.map(order => (
+                      <tr
+                        key={order.id}
+                        className="hover:bg-orange-50/30 transition-colors cursor-pointer group"
+                      >
+                        {/* Order ID Excerpt */}
+                        <td className="px-6 py-5 text-sm leading-[1.2] tracking-[0.05em] font-bold font-['Plus_Jakarta_Sans'] text-[#974400]">
+                          #{order.id.slice(0, 8).toUpperCase()}
+                        </td>
+
+                        {/* Customer Information */}
+                        <td className="px-6 py-5">
+                          <div className="font-bold text-sm text-[#1f1b12] font-['Plus_Jakarta_Sans'] mb-0.5">
+                            {order.customer_name}
+                          </div>
+                          <div className="text-xs font-medium text-[#8a7266] font-['Plus_Jakarta_Sans']">
+                            {order.phone_number || 'No phone number'}
+                          </div>
+                        </td>
+
+                        {/* Delivery Method & Conditional Address Layout */}
+                        <td className="px-6 py-5 text-sm font-['Plus_Jakarta_Sans'] text-[#564338]">
+                          {order.delivery_method === 'home' ? (
+                            <div className="flex flex-col gap-0.5">
+                              <span className="w-fit bg-orange-100 text-[#974400] text-[9px] tracking-wider font-extrabold px-1.5 py-0.5 rounded-md uppercase">
+                                Home Delivery
+                              </span>
+                              <span
+                                className="text-xs truncate block max-w-[180px]"
+                                title={`${order.street_address}, ${order.city}`}
+                              >
+                                {order.street_address}, {order.city}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="w-fit bg-stone-100 text-stone-700 text-[9px] tracking-wider font-extrabold px-1.5 py-0.5 rounded-md uppercase">
+                              Store Pickup
+                            </span>
+                          )}
+                        </td>
+
+                        {/* Created At Timestamp */}
+                        <td className="px-6 py-5 text-sm font-medium font-['Plus_Jakarta_Sans'] text-[#564338]">
+                          {new Date(order.created_at).toLocaleDateString(
+                            undefined,
+                            {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric',
+                            },
+                          )}
+                        </td>
+
+                        {/* Order Price Target */}
+                        <td className="px-6 py-5 text-sm font-extrabold font-['Plus_Jakarta_Sans'] text-[#1f1b12]">
+                          ${Number(order.total_amount).toFixed(2)}
+                        </td>
+
+                        {/* Status Badge Pills */}
+                        <td className="px-6 py-5">
+                          <span
+                            className={`inline-block px-3 py-1 rounded-full text-[10px] tracking-wider font-extrabold font-['Plus_Jakarta_Sans'] uppercase ${
+                              order.payment_status.toLowerCase() === 'paid'
+                                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                                : order.payment_status.toLowerCase() ===
+                                    'shipped'
+                                  ? 'bg-blue-50 text-blue-800 border border-blue-200'
+                                  : 'bg-amber-50 text-amber-800 border border-amber-200'
+                            }`}
+                          >
+                            {order.payment_status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
             </div>
           </section>
         </div>
