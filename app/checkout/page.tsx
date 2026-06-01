@@ -172,7 +172,11 @@ export default function Checkout() {
           ) : step === 3 ? (
             <Review />
           ) : step === 4 ? (
-            <Payment handlepayment={() => handlePaymentSuccess('ch_real_gateway_id_xyz')} isSubmitting={isSubmitting} />
+            <Payment handlepayment={() => {
+              const randomString = Math.random().toString(36).substring(2, 9);
+              const uniqueId = `ch_${Date.now()}_${randomString}`;
+              handlePaymentSuccess(uniqueId);
+            }} isSubmitting={isSubmitting} />
           ) : (
             <Info />
           )}
