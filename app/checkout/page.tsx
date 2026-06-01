@@ -35,57 +35,57 @@ export default function Checkout() {
   const total = subTotal + deliveryFee + tax;
 
   const handlePaymentSuccess = async (mockPaymentId: string) => {
-    if (deliveryMethod === 'delivery') {
-      if (
-        !deliveryInfo.address ||
-        !deliveryInfo.city ||
-        !deliveryInfo.postcode
-      ) {
-        toast.error('Please fill out your delivery address components.');
-        return;
-      }
-    }
-
-    if (!deliveryInfo.firstName || !deliveryInfo.phone) {
-      toast.error('Name and phone number fields are required.');
+  if (deliveryMethod === 'delivery') {
+    if (
+      !deliveryInfo.address ||
+      !deliveryInfo.city ||
+      !deliveryInfo.postcode
+    ) {
+      toast.error('Please fill out your delivery address components.');
       return;
     }
+  }
 
-    setIsSubmitting(true);
+  if (!deliveryInfo.firstName || !deliveryInfo.phone) {
+    toast.error('Name and phone number fields are required.');
+    return;
+  }
 
-    // Combine individual name inputs for database text field
-    const payloadDeliveryDetails = {
-      customerName: `${deliveryInfo.firstName} ${deliveryInfo.lastName}`.trim(),
-      deliveryMethod,
-      address: deliveryInfo.address,
-      city: deliveryInfo.city,
-      postcode: deliveryInfo.postcode,
-      phone: deliveryInfo.phone,
-    };
+  setIsSubmitting(true);
 
-    try {
-      // Send mapped store data to your server component
-      const result = await saveTransactionToSupabase(
-        payloadDeliveryDetails,
-        items,
-        mockPaymentId,
-        total,
-      );
-
-      if (result.success) {
-        // Clear all persistent states on success
-        clearCart();
-        resetCheckout();
-        toast.success('Payment Successful !!!');
-      } else {
-        toast.error(`Failed to complete database syncing: ${result.error}`);
-      }
-    } catch (err) {
-      toast.error('An unexpected integration error occurred.');
-    } finally {
-      setIsSubmitting(false);
-    }
+  // Combine individual name inputs for database text field
+  const payloadDeliveryDetails = {
+    customerName: `${deliveryInfo.firstName} ${deliveryInfo.lastName}`.trim(),
+    deliveryMethod,
+    address: deliveryInfo.address,
+    city: deliveryInfo.city,
+    postcode: deliveryInfo.postcode,
+    phone: deliveryInfo.phone,
   };
+
+  try {
+    // Send mapped store data to your server component
+    const result = await saveTransactionToSupabase(
+      payloadDeliveryDetails,
+      items,
+      mockPaymentId,
+      total,
+    );
+
+    if (result.success) {
+      toast.success('Payment Successful !!!');
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      clearCart();
+      resetCheckout(); 
+    } else {
+      toast.error(`Failed to complete database syncing: ${result.error}`);
+    }
+  } catch (err) {
+    toast.error('An unexpected integration error occurred.');
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   return (
     <main className="max-w-full bg-[#fff8f1]">
