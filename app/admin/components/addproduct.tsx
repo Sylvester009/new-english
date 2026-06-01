@@ -61,7 +61,7 @@ export default function AddProductForm({
       }
       if (onSuccess) onSuccess();
     } catch (err: any) {
-      toast.error(`Error: ${err.message}`);
+      console.error(`Error: ${err.message}`);
     } finally {
       setLoading(false);
     }
