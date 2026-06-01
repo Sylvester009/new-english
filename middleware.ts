@@ -42,7 +42,7 @@ export async function middleware(request: NextRequest) {
     const userRole = user.app_metadata?.role;
     if (userRole !== 'admin') {
       const url = request.nextUrl.clone();
-      url.pathname = '/store';
+      url.pathname = '/admin/login';
       return NextResponse.redirect(url);
     }
   }
