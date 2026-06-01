@@ -28,21 +28,26 @@ export async function middleware(request: NextRequest) {
   );
 
   const { data: { user } } = await supabase.auth.getUser();
+  const { pathname } = request.nextUrl;
 
-  if (request.nextUrl.pathname.startsWith('/admin')) {
+  if (pathname === '/admin/login') {
+    return supabaseResponse;
+  }
+
+  if (pathname.startsWith('/admin')) {
     
     // Redirect if not logged in
     if (!user) {
       const url = request.nextUrl.clone();
-      url.pathname = '/login';
+      url.pathname = '/admin/login';
       return NextResponse.redirect(url);
     }
 
-    // Redirect if not an admin
+    // Redirect if logged in but role is not admin
     const userRole = user.app_metadata?.role;
     if (userRole !== 'admin') {
       const url = request.nextUrl.clone();
-      url.pathname = '/admin/login';
+      url.pathname = '/unauthorized';
       return NextResponse.redirect(url);
     }
   }
