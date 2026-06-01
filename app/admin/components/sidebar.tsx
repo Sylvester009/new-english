@@ -27,16 +27,6 @@ export default function Sidebar() {
       icon: 'group',
       label: 'Customers',
     },
-    {
-      href: '/admin/analytics',
-      icon: 'analytics',
-      label: 'Analytics',
-    },
-    {
-      href: '/admin/settings',
-      icon: 'settings',
-      label: 'Settings',
-    },
   ];
 
   const isActive = (href: string) => pathname === href;
